@@ -1,0 +1,8 @@
+@include('include.header', ['site_title' => 'Home | Salonuxe'])
+@include('include.home.banner')
+@include('include.home.about')
+@include('include.home.services')
+@include('include.home.testimonials')
+@include('include.home.experience')
+@include('include.home.gallery')
+@include('include.footer')
