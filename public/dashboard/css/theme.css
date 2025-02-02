@@ -6847,7 +6847,7 @@ html.sidebar-light:not(.dark) ul.nav-main li .nav-children li a:hover, html.side
 
 /* Colors */
 .btn-primary {
-	background-color: #CCC;
+	background-color: #efcec9;
 	border-color: #CCC #CCC #b3b2b2;
 	color: #FFF;
 }
@@ -6855,7 +6855,7 @@ html.sidebar-light:not(.dark) ul.nav-main li .nav-children li a:hover, html.side
 .btn-primary:hover, .btn-primary.hover {
 	background-color: #dfdfdf;
 	border-color: #e6e5e5 #e6e5e5 #CCC;
-	color: #FFF;
+	color: black;
 }
 
 .btn-primary:focus, .btn-primary.focus {

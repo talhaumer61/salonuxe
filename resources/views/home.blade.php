@@ -1,4 +1,4 @@
-@include('include.header', ['site_title' => 'Home | Salonuxe'])
+@include('include.navbar', ['site_title' => 'Home | Salonuxe'])
 @include('include.home.banner')
 @include('include.home.about')
 @include('include.home.services')

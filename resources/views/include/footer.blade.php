@@ -152,7 +152,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="register-body">
-                        <form>
+                        <form action="" method="POST">
+                            @csrf
                             <div>
                                 <input type="text" placeholder="User Name*">
                             </div>
@@ -161,10 +162,10 @@
                             </div>
                             <div>
                                 <ul>
-                                    <li>
+                                    {{-- <li>
                                         <input type="checkbox" class="form-check-input" id="exampleCheck2">
                                         <label class="form-check-label" for="exampleCheck2">Remember Me</label>
-                                    </li>
+                                    </li> --}}
                                     <li>
                                         <a href="javascript:;">Forgot Password?</a>
                                     </li>
@@ -199,35 +200,54 @@
                 </div>
                 <div class="modal-body">
                     <div class="register-body">
-                        <form>
+                        <form action="/signup" method="POST">
+                            @csrf
                             <div>
-                                <input type="text" placeholder="User Name*">
+                                <input type="text" class="form-control" name="name" id="signup-firstname" placeholder="Full Name*">
+                                <small class="text-danger d-none" id="name-error"></small>
                             </div>
                             <div>
-                                <input type="email" placeholder="Email*">
+                                <input type="text" class="form-control" name="email" id="signup-email" placeholder="Email*">
+                                <small class="text-danger d-none" id="email-error"></small>
                             </div>
                             <div>
-                                <input type="password" placeholder="Password*">
+                                <input type="text" class="form-control" name="username" id="signup-username" placeholder="Username*">
+                                <small class="text-danger d-none" id="username-error"></small>
                             </div>
-                            <div>
-                                <input type="password" placeholder="Confirm Password*">
+                            <div class="position-relative">
+                                <input type="password" class="form-control form-control-lg pe-5" name="password" id="signup-password" placeholder="Password">
+                                <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-50 translate-middle-y me-3 text-muted" onclick="createpassword('signup-password', this)">
+                                    <i class="ri-eye-off-line align-middle"></i>
+                                </a>
                             </div>
-                            <div>
+                            <div class="position-relative">
+                                <input type="password" class="form-control form-control-lg pe-5" name="password_confirmation" id="signup-password-confirm" placeholder="Confirm Password">
+                                <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-50 translate-middle-y me-3 text-muted" onclick="createpassword('signup-password-confirm', this)">
+                                    <i class="ri-eye-off-line align-middle"></i>
+                                </a>
+                            </div>                            
+                            {{-- <div>
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
                                 <label class="form-check-label" for="exampleCheck1">Yes, I understand and agree
                                     <a href="javascript:;">Terms & Conditions.</a> </label>
+                            </div> --}}
+                            <div class="sign-btn">
+                                <button type="submit" href="javascript:;" class="main-btn-red">
+                                    <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up
+                                    </span>
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="modal-footer">
+                {{-- <div class="modal-footer">
                     <div class="sign-btn">
                         <a href="javascript:;" class="main-btn-red">
                             <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up
                             </span>
                         </a>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

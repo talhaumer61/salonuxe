@@ -12,13 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->integer('status')->comment('1: Active, 2: Inactive');
+            $table->integer('id_role')->comment('Permission switch');
+            $table->integer('login_type')->comment('Directory switch');
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('salt');
             $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('photo')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('remember_token')->nullable();
+            $table->bigInteger('id_added')->nullable();
+            $table->bigInteger('id_modify')->nullable();
+            $table->timestamp('date_added')->nullable();
+            $table->timestamp('date_modify')->nullable();
+            $table->boolean('is_deleted')->default(false)->comment('1 = deleted');
+            $table->bigInteger('id_deleted')->nullable();
+            $table->timestamp('date_deleted')->nullable();
+            $table->string('ip_deleted')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

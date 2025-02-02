@@ -22,6 +22,9 @@
     <link rel="stylesheet" type="text/css" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/responsive.css')}}">
     <link rel="shortcut icon" type="image/png" href="{{asset('images/favicon.png')}}">
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -33,4 +36,4 @@
         </div>
     </div>
 
-        @include('include.navbar')
+        
