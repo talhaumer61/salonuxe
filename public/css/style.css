@@ -2,6 +2,7 @@
 :root{
   --peach:#efcec9;
   --heading:#333333;
+  --maroon:#911439;
 }
 h1 {
   font-size: 50px;
@@ -9898,4 +9899,7 @@ ul {
 }
 .text-danger {
   display: block !important;
+}
+.register-salon-btn{
+  color: var(--maroon);
 }

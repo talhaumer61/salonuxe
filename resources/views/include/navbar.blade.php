@@ -42,10 +42,22 @@
                                     </ul>
                                 </li>
 
-                                <!-- Show Dashboard link only if user is logged in -->
-                                @if(session()->has('user'))
+                                <!-- Show Dashboard link only if user is logged in as client-->
+                                @if(session()->has('user') && session('user')->login_type==2)
                                 <li class="nav-item d-flex">
                                     <a class="nav-link" href="/client-dashboard">
+                                        <div class="main-btn">
+                                            <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
+                                            <span>Dashboard</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @endif
+                                
+                                <!-- Show Dashboard link only if user is logged in salon-->
+                                @if(session()->has('user') && session('user')->login_type==3)
+                                <li class="nav-item d-flex">
+                                    <a class="nav-link" href="/salon-dashboard">
                                         <div class="main-btn">
                                             <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
                                             <span>Dashboard</span>

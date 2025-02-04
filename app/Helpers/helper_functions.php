@@ -32,7 +32,7 @@ function get_logintypes($id = '') {
 	$listlogintypes = array (
 								   '1'	=> 'admin',
 								   '2'	=> 'client',
-								   '3'	=> 'organizer'
+								   '3'	=> 'salon'
 							);
 	if(!empty($id)){
 		return $listlogintypes[$id];

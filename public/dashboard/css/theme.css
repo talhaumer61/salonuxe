@@ -3888,6 +3888,10 @@ html.dark .inner-menu .inner-menu-toggle-inside:after {
 	border-top: 3px solid #EDEDED; */
 	z-index: 1000;
 }
+.admin-header{
+	background: #FFF;
+
+}
 
 .header .logo {
 	float: left;
@@ -20294,7 +20298,7 @@ html.dark .search-content .search-results-list a:hover {
 
 .body-sign .card-sign .card-body {
 	background: #FFF;
-	border-top: 5px solid #CCC;
+	/* border-top: 5px solid #CCC; */
 	border-radius: 5px 0 5px 5px;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 	padding: 33px 33px 15px;

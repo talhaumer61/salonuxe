@@ -264,10 +264,13 @@
                                 <small class="text-danger d-none" id="confirm-password-error"></small> <!-- Confirm Password error -->
                             </div>    
                         
-                            <div class="sign-btn">
+                            <div class="sign-btn text-center">
                                 <button type="submit" class="main-btn-red">
                                     <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up</span>
                                 </button>
+                            </div>
+                            <div class="text-center py-3">
+                                <p>Salon Owner? <a class="register-salon-btn" href="/register-salon">Register Salon</a></p>
                             </div>
                         </form>
                         

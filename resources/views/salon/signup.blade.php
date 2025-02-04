@@ -27,9 +27,7 @@
 		<!-- Head Libs -->
 		<script src="dashboard/vendor/modernizr/modernizr.js"></script>
 		<script src="dashboard/master/style-switcher/style.switcher.localstorage.js"></script>
-    
-        <link rel="shortcut icon" type="image/png" href="{{asset('images/favicon.png')}}">
-        <title>Login | Salonuxe</title>
+        <title>Register Salon | Salonuxe</title>
 	</head>
 	<body>
 		<!-- start: page -->
@@ -37,56 +35,54 @@
 			<div class="center-sign">
 				<div class="panel card-sign">
 					<div class="card-body">
-                        <h2 class="text-center text-dark">Login</h2>
-						<form action="{{ route('userLogin') }}" method="post" onsubmit="return validateLoginForm()">
+                        <h2 class="text-center text-dark">Signup</h2>
+                        <p class="text-center text-dark">Welcome & Join Us!</p>
+						<form action="{{ route('salonSignup') }}" method="post" onsubmit="return validateSignupForm()">
                             @csrf
                             <div class="form-group mb-3">
-                                <label>Username</label>
-                                <div class="input-group">
-                                    <input name="username" type="text" class="form-control form-control-lg" value="{{ old('username') }}">
-                                    <span class="input-group-text">
-                                        <i class="bx bx-user text-4"></i>
-                                    </span>
-                                </div>
-                                @error('username')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
+                                <label for="signup-firstname">Full Name<sup>*</sup></label>
+                                <input name="name" type="text" class="form-control form-control-lg" id="signup-firstname">
+                                <small class="text-danger d-none" id="name-error"></small>
                             </div>
-                            
                             <div class="form-group mb-3">
-                                <div class="clearfix">
-                                    <label class="float-start">Password</label>
-                                    <a href="#" class="float-end">Forget Password?</a>
-                                </div>
+                                <label for="signup-email">E-mail Address<sup>*</sup></label>
+                                <input name="email" type="text" class="form-control form-control-lg" id="signup-email">
+                                <small class="text-danger d-none" id="email-error"></small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="signup-username">Username<sup>*</sup></label>
+                                <input name="username" type="text" class="form-control form-control-lg" id="signup-username">
+                                <small class="text-danger d-none" id="username-error"></small>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label for="signup-password">Password<sup>*</sup></label>
                                 <div class="position-relative">
-                                    <input name="password" type="password" class="form-control form-control-lg pe-5" id="login-password" value="{{ old('password') }}">
-                                    <a href="javascript:void(0);" class="show-password-button text-muted position-absolute end-0 top-50 translate-middle-y me-3" onclick="createpassword('login-password', this)">
+                                    <input name="password" type="password" class="form-control form-control-lg pe-5" id="signup-password">
+                                    <a href="javascript:void(0);" class="show-password-button text-muted position-absolute end-0 top-50 translate-middle-y me-3" onclick="createpassword('signup-password',this)">
                                         <i class="ri-eye-off-line align-middle"></i>
                                     </a>
                                 </div>
-                                @error('password')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
+                                <small class="text-danger d-none" id="password-error"></small>
                             </div>
                             
-                            {{-- <div class="row">
-                                <div class="col-sm-8">
-                                    <div class="checkbox-custom checkbox-default">
-                                        <input id="RememberMe" name="rememberme" type="checkbox">
-                                        <label for="RememberMe">Remember Me</label>
-                                    </div>
+                            <div class="form-group mb-0">
+                                <label for="signup-confirmpassword">Confirm Password<sup>*</sup></label>
+                                <div class="position-relative">
+                                    <input name="password_confirmation" type="password" class="form-control form-control-lg pe-5" id="signup-confirmpassword">
+                                    <a href="javascript:void(0);" class="show-password-button text-muted position-absolute end-0 top-50 translate-middle-y me-3" onclick="createpassword('signup-confirmpassword',this)">
+                                        <i class="ri-eye-off-line align-middle"></i>
+                                    </a>
                                 </div>
-                            </div> --}}
+                                <small class="text-danger d-none" id="confirm-password-error"></small>
+                            </div>
                             
                             <div class="row justify-content-center">
                                 <div class="col-sm-4 text-end">
-                                    <button type="submit" class="btn btn-primary mt-2">Sign In</button>
+                                    <button type="submit" class="btn btn-primary mt-2">Sign Up</button>
                                 </div>
                             </div>
-                            
-                            <p class="text-center">Don't have an account yet? <a href="/signup">Sign Up!</a></p>
+                            {{-- <p class="text-center">Already have an account? <a href="/login">Sign In!</a></p> --}}
                         </form>
-                        
 					</div>
 				</div>
 				{{-- <p class="text-center text-muted mt-3 mb-3">&copy; Copyright 2023. All Rights Reserved.</p> --}}

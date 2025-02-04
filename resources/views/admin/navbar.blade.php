@@ -1,4 +1,4 @@
-<header class="header header-nav-menu">
+<header class="header header-nav-menu admin-header">
     <div class="logo-container">
         <a href="../" class="logo">
             <img src="{{asset('images/logo.png')}}" width="75" height="35" alt="Porto Admin">
@@ -12,13 +12,18 @@
                 <nav>
                     <ul class="nav nav-pills" id="mainNav">
                         <li class="">
-                            <a class="nav-link" href="/client-dashboard">
+                            <a class="nav-link" href="/admin">
                                 Dashboard
                             </a>    
                         </li>
                         <li class="">
-                            <a class="nav-link" href="/">
-                                Home
+                            <a class="nav-link" href="#">
+                                Users
+                            </a>    
+                        </li>
+                        <li class="">
+                            <a class="nav-link" href="#">
+                                Salons
                             </a>    
                         </li>
                         <li class="dropdown">
@@ -27,8 +32,25 @@
                             <i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="nav-link" href="/bookings">
+                                    <a class="nav-link" href="/appointments">
                                         List
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">
+                                Payments
+                            <i class="fas fa-caret-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="nav-link" href="#">
+                                        Completed
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#">
+                                        Pending
                                     </a>
                                 </li>
                             </ul>
@@ -240,13 +262,13 @@
                 <ul class="list-unstyled">
                     <li class="divider"></li>
                     <li>
-                        <a role="menuitem" tabindex="-1" href="/profile"><i class="bx bx-user-circle"></i> My Profile</a>
+                        <a role="menuitem" tabindex="-1" href="/admin-profile"><i class="bx bx-user-circle"></i> My Profile</a>
                     </li>
                     <li>
                         <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
                     </li>
                     <li>
-                        <a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="bx bx-power-off"></i> Logout</a>
+                        <a role="menuitem" tabindex="-1" href="logout"><i class="bx bx-power-off"></i> Logout</a>
                     </li>
                 </ul>
             </div>
