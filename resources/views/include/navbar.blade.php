@@ -57,16 +57,28 @@
                                 <!-- Show Login and Register links only if user is NOT logged in -->
                                 @if(!session()->has('user'))
                                     <li class="nav-item d-flex">
-                                        <a class="nav-link" href="/login">
+                                        {{-- <a class="nav-link" href="/login">
                                             <div class="main-btn">
                                                 <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
                                                 <span>Login</span>
                                             </div>
-                                        </a>
-                                        <a class="nav-link" href="/signup">
+                                        </a> --}}
+                                        {{-- <a class="nav-link" href="/signup">
                                             <div class="main-btn">
                                                 <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
                                                 <span>Register</span>
+                                            </div>
+                                        </a> --}}
+                                        <a class="nav-link" href="javascript:;">
+                                            <div class="main-btn">
+                                                <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
+                                                <span data-bs-toggle="modal" data-bs-target="#staticBackdrop">Login</span>
+                                            </div>
+                                        </a>
+                                        <a class="nav-link" href="javascript:;">
+                                            <div class="main-btn">
+                                                <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
+                                                <span data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Register</span>
                                             </div>
                                         </a>
                                     </li>

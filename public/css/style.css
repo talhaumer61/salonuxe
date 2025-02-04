@@ -9873,3 +9873,29 @@ ul {
   background-color: #efcec9;
   border-radius: 4px;
 }
+
+.position-relative {
+  position: relative; /* Container should have relative positioning */
+}
+
+.show-password-button {
+  position: absolute; /* Eye icon will stay in place */
+  top: 50%;
+  right: 15px; /* Adjust based on spacing you need */
+  transform: translateY(-0%);
+}
+.top-38{
+  top: 38% !important;
+}
+
+.text-danger {
+  font-size: 0.875rem;
+  position: absolute;
+  bottom: -20px; /* Keep it below the input */
+  left: 0;
+  width: 100%;
+  margin: 0;
+}
+.text-danger {
+  display: block !important;
+}

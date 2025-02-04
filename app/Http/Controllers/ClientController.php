@@ -14,6 +14,9 @@ class ClientController extends Controller
     public function profile(){
         return view('client.profile');
     }
+    public function bookings(){
+        return view('client.bookings');
+    }
     public function signup(Request $request)
     {
         // Validate incoming request

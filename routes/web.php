@@ -33,6 +33,7 @@ Route::middleware([CheckAuthentication::class])->group(function () {
     Route::middleware([ClientVerification::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('dashboard');
         Route::get('/profile', [ClientController::class, 'profile']);
+        Route::get('/bookings', [ClientController::class, 'bookings']);
     });
     
     

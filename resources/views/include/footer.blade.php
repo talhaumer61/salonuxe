@@ -152,40 +152,70 @@
                 </div>
                 <div class="modal-body">
                     <div class="register-body">
-                        <form action="" method="POST">
+                        {{-- <form action="{{ route('userLogin') }}" method="POST" id="login-form">
                             @csrf
                             <div>
-                                <input type="text" placeholder="User Name*">
+                                <input type="text" name="username" placeholder="User Name*" value="{{ old('username') }}">
+                                @error('username')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
-                            <div>
-                                <input type="password" placeholder="Password*">
+                            <div class="position-relative">
+                                <input type="password" name="password" id="login-password" placeholder="Password*">
+                                <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-38 translate-middle-y me-3 text-muted" onclick="createpassword('login-password', this)">
+                                    <i class="ri-eye-off-line align-middle"></i>
+                                </a>
+                                @error('password')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div>
                                 <ul>
-                                    {{-- <li>
-                                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
-                                        <label class="form-check-label" for="exampleCheck2">Remember Me</label>
-                                    </li> --}}
                                     <li>
                                         <a href="javascript:;">Forgot Password?</a>
                                     </li>
                                 </ul>
                             </div>
+                            <div class="sign-btn">
+                                <button type="submit" class="main-btn-red">
+                                    <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Log In</span>
+                                </button>
+                            </div>
+                        </form> --}}
+                        <form action="{{ route('userLogin') }}" method="POST" id="login-form">
+                            @csrf
+                            <div>
+                                <input type="text" name="username" placeholder="User Name*" value="{{ old('username') }}">
+                                <small class="text-danger error-message" id="username-error"></small> <!-- Error message placeholder -->
+                            </div>
+                            <div class="position-relative">
+                                <input type="password" name="password" id="login-password" placeholder="Password*">
+                                <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-38 translate-middle-y me-3 text-muted" onclick="createpassword('login-password', this)">
+                                    <i class="ri-eye-off-line align-middle"></i>
+                                </a>
+                                <small class="text-danger error-message" id="password-error"></small> <!-- Error message placeholder -->
+                            </div>
+                            <div>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:;">Forgot Password?</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="sign-btn">
+                                <button type="submit" class="main-btn-red">
+                                    <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Log In</span>
+                                </button>
+                            </div>
                         </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="sign-btn">
-                        <a href="javascript:;" class="main-btn-red">
-                            <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Log In
-                            </span>
-                        </a>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Register Modal -->
 <div class="login-wrapper">
@@ -200,44 +230,47 @@
                 </div>
                 <div class="modal-body">
                     <div class="register-body">
-                        <form action="/signup" method="POST">
+                        <form id="signup-form" action="{{ route('clientSignup') }}" method="POST">
                             @csrf
-                            <div>
+                            <div class="position-relative">
                                 <input type="text" class="form-control" name="name" id="signup-firstname" placeholder="Full Name*">
-                                <small class="text-danger d-none" id="name-error"></small>
+                                <small class="text-danger d-none" id="name-error"></small> <!-- Name error -->
                             </div>
-                            <div>
+                            
+                            <div class="position-relative">
                                 <input type="text" class="form-control" name="email" id="signup-email" placeholder="Email*">
-                                <small class="text-danger d-none" id="email-error"></small>
+                                <small class="text-danger d-none" id="email-error"></small> <!-- Email error -->
                             </div>
-                            <div>
+                            
+                            <div class="position-relative">
                                 <input type="text" class="form-control" name="username" id="signup-username" placeholder="Username*">
-                                <small class="text-danger d-none" id="username-error"></small>
+                                <small class="text-danger d-none" id="username-error"></small> <!-- Username error -->
                             </div>
+                            
                             <div class="position-relative">
                                 <input type="password" class="form-control form-control-lg pe-5" name="password" id="signup-password" placeholder="Password">
                                 <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-50 translate-middle-y me-3 text-muted" onclick="createpassword('signup-password', this)">
                                     <i class="ri-eye-off-line align-middle"></i>
                                 </a>
+                                <small class="text-danger d-none" id="password-error"></small> <!-- Password error -->
+                                <small class="text-danger" id="length-error"></small> <!-- Password error -->
                             </div>
+                            
                             <div class="position-relative">
                                 <input type="password" class="form-control form-control-lg pe-5" name="password_confirmation" id="signup-password-confirm" placeholder="Confirm Password">
                                 <a href="javascript:void(0);" class="show-password-button position-absolute end-0 top-50 translate-middle-y me-3 text-muted" onclick="createpassword('signup-password-confirm', this)">
                                     <i class="ri-eye-off-line align-middle"></i>
                                 </a>
-                            </div>                            
-                            {{-- <div>
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Yes, I understand and agree
-                                    <a href="javascript:;">Terms & Conditions.</a> </label>
-                            </div> --}}
+                                <small class="text-danger d-none" id="confirm-password-error"></small> <!-- Confirm Password error -->
+                            </div>    
+                        
                             <div class="sign-btn">
-                                <button type="submit" href="javascript:;" class="main-btn-red">
-                                    <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up
-                                    </span>
+                                <button type="submit" class="main-btn-red">
+                                    <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up</span>
                                 </button>
                             </div>
                         </form>
+                        
                     </div>
                 </div>
                 {{-- <div class="modal-footer">
@@ -252,4 +285,5 @@
         </div>
     </div>
 </div>
+
 @include('include.footer_links')
