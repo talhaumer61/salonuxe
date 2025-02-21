@@ -40,6 +40,23 @@
                         </li>
                         <li class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#">
+                                Services
+                            <i class="fas fa-caret-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="nav-link" href="#">
+                                        List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/service-types">
+                                        Types
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">
                                 Payments
                             <i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">

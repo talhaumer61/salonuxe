@@ -118,3 +118,11 @@ function sendRemark($remarks = "", $action = "", $id_record = "") {
     // Return false if required parameters are missing
     return false;
 }
+
+// Get Status
+function get_status($id) {
+    $liststatus= array (
+                            '1' => '<span class="badge bg-success p-2 rounded">Active</span>', 
+                            '2' => '<span class="badge bg-danger p-2 rounded">Inactive</span>');
+    return $liststatus[$id];
+}

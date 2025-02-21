@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SalonController;
@@ -42,6 +44,13 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin-profile', [AdminController::class, 'profile']);
     Route::get('/appointments', [AdminController::class, 'appointments']);
+    Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
+
+    Route::post('/service-types/add', [ServicesController::class, 'add_service_type'])->name('service_types.add');
+    Route::put('/service-types/update/{href}', [ServicesController::class, 'edit_service_type'])->name('service_types.update');
+
+    Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');
+
 });
 
 // Routes Accessible Only to Logged-in Users (Protected Routes)

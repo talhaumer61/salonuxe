@@ -20,6 +20,7 @@ class AdminController extends Controller
     public function appointments(){
         return view('admin.bookings');
     }
+    
     public function login(Request $request)
     {
         // if (session()->has('user')) {
