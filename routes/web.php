@@ -44,6 +44,7 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin-profile', [AdminController::class, 'profile']);
     Route::get('/appointments', [AdminController::class, 'appointments']);
+    Route::get('/users', [AdminController::class, 'users']);
     Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
 
     Route::post('/service-types/add', [ServicesController::class, 'add_service_type'])->name('service_types.add');

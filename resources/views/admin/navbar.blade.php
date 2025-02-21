@@ -17,7 +17,7 @@
                             </a>    
                         </li>
                         <li class="">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="/users">
                                 Users
                             </a>    
                         </li>

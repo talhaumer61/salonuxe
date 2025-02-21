@@ -20,6 +20,16 @@ class AdminController extends Controller
     public function appointments(){
         return view('admin.bookings');
     }
+    public function users(){
+        $users = DB::table('users')
+        ->where('is_deleted', 0)
+        // ->where('status', 1)
+        ->where('login_type', 2)
+        ->paginate(10); // Fetch all matching users
+    
+        return view('admin.users', compact('users'));
+
+    }
     
     public function login(Request $request)
     {
