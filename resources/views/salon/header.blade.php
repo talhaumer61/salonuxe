@@ -27,6 +27,9 @@
 		<link rel="stylesheet" href="dashboard/css/custom.css">
 
 		<link rel="shortcut icon" type="image/png" href="{{asset('images/favicon.png')}}">
+		
+		{{-- Timepicker --}}
+		<link rel="stylesheet" href="{{asset('dashboard/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css')}}" />
 		<!-- Head Libs -->
 		<script src="dashboard/vendor/modernizr/modernizr.js"></script>
 		<script src="dashboard/master/style-switcher/style.switcher.localstorage.js"></script>

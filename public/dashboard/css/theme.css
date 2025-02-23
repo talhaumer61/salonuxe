@@ -2191,8 +2191,7 @@ html.no-overflowscrolling.sidebar-light:not(.dark) .inner-menu .nano {
 .page-header.page-header-left-inline-breadcrumb {
 	display: flex;
 	align-items: center;
-	/* background: #ecedf0; */
-	background: white;
+	background: #ecedf0;
 	height: auto;
 	padding: 25px 25px 0;
 	margin-bottom: 20px;

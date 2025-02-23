@@ -31,8 +31,13 @@
 		<!-- Theme Custom CSS -->
 		<link rel="stylesheet" href="{{asset('dashboard/css/custom.css')}}">
 
+		
 		<link rel="shortcut icon" type="image/png" href="{{asset('images/favicon.png')}}">
 		<!-- Head Libs -->
+		
+		{{-- Timepicker --}}
+		<link rel="stylesheet" href="{{asset('dashboard/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css')}}" />
+
 		<script src="{{asset('dashboard/vendor/modernizr/modernizr.js')}}"></script>
 		<script src="{{asset('dashboard/master/style-switcher/style.switcher.localstorage.js')}}"></script>
 

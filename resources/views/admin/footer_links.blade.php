@@ -5,9 +5,10 @@
         <script src="{{asset('dashboard/master/style-switcher/style.switcher.js')}}"></script>		
         <script src="{{asset('dashboard/vendor/popper/umd/popper.min.js')}}"></script>		
         <script src="{{asset('dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>		
-        <script src="{{asset('dashboard/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>		
+        <script src="{{asset('dashboard/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>	
+        <script src="{{asset('dashboard/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js')}}"></script>	
         <script src="{{asset('dashboard/vendor/common/common.js')}}"></script>		
-        <script src="{{asset('dashboard/vendor/nanoscroller/nanoscroller.js">')}}</script>		
+        <script src="{{asset('dashboard/vendor/nanoscroller/nanoscroller.js">')}}"></script>		
         <script src="{{asset('dashboard/vendor/magnific-popup/jquery.magnific-popup.js')}}"></script>		
         <script src="{{asset('dashboard/vendor/jquery-placeholder/jquery.placeholder.')}}js"></script>
 		<!-- Specific Page Vendor -->
@@ -148,6 +149,8 @@
                 });
             }
         </script>
+
+        
 
 		<!-- Examples -->
 		

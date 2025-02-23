@@ -66,6 +66,10 @@ Route::middleware([CheckAuthentication::class])->group(function () {
     Route::middleware([SalonVerification::class])->group(function () {
         Route::get('/salon-dashboard', [SalonController::class, 'index'])->name('salonDashboard');
         Route::get('/profile', [SalonController::class, 'profile']);
+        Route::get('/salon-profile', [SalonController::class, 'salon_profile']);
+        Route::post('/salon/add', [SalonController::class, 'addSalon'])->name('add.salon'); // Add new salon
+        Route::put('/salon/update', [SalonController::class, 'updateSalon'])->name('update.salon'); // Update existing salon
+
         Route::get('/bookings', [SalonController::class, 'bookings']);
     });
     
