@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 class SiteController extends Controller
 {
     public function home(){
-        
         return view('home');
     }
 
@@ -106,7 +105,16 @@ class SiteController extends Controller
                         ->orWhere('email', $request->username);
                 })
                 ->first();
+        if ($user && $user->login_type == 3) {
+            $salon = DB::table('salons')->where('id_user', $user->id)->first();
 
+            if ($salon) {
+                $user->salon_id = $salon->salon_id;
+                $user->salon_name = $salon->salon_name;
+
+                session(['user' => $user]); // Update session with salon data
+            }
+        }
         if ($user) {
             $salt = $user->salt;
             $storedHash = $user->password;

@@ -21,6 +21,11 @@
                                 Home
                             </a>    
                         </li>
+                        <li class="">
+                            <a class="nav-link" href="/services">
+                                Services
+                            </a>    
+                        </li>
                         <li class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#">
                                 Bookings

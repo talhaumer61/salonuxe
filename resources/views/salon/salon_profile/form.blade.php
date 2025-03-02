@@ -1,8 +1,12 @@
-<header class="page-header page-header-left-inline-breadcrumb">
-    <h2 class="font-weight-bold text-6">Salon Info</h2>
-    <div class="right-wrapper">
-        <ol class="breadcrumbs">
-            <li><span>Dashboard</span></li>
+<header class="page-header">
+    <h2>Salon Profile</h2>
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs pe-2">
+            <li>
+                <a href="/admin">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
             <li><span>Salon Profile</span></li>
         </ol>
     </div>

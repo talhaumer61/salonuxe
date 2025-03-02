@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 // Main Website Routes
 Route::get('/', [SiteController::class, 'home']);
-Route::get('/services', [SiteController::class, 'services']);
+Route::get('/available-services', [SiteController::class, 'services']);
 Route::get('/salons', [SiteController::class, 'salons']);
 Route::get('/about', [SiteController::class, 'about']);
 Route::get('/contact', [SiteController::class, 'contact']);
@@ -56,13 +56,15 @@ Route::middleware([AdminVerification::class])->group(function () {
 
 // Routes Accessible Only to Logged-in Users (Protected Routes)
 Route::middleware([CheckAuthentication::class])->group(function () {
+    
     // Routes Accessible Only to Clients (login_type = 2)
     Route::middleware([ClientVerification::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('clientDashboard');
         Route::get('/profile', [ClientController::class, 'profile']);
         Route::get('/bookings', [ClientController::class, 'bookings']);
     });
-    // Routes Accessible Only to Clients (login_type = 3)
+
+    // Routes Accessible Only to Salons (login_type = 3)
     Route::middleware([SalonVerification::class])->group(function () {
         Route::get('/salon-dashboard', [SalonController::class, 'index'])->name('salonDashboard');
         Route::get('/profile', [SalonController::class, 'profile']);
@@ -70,7 +72,15 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::post('/salon/add', [SalonController::class, 'addSalon'])->name('add.salon'); // Add new salon
         Route::put('/salon/update', [SalonController::class, 'updateSalon'])->name('update.salon'); // Update existing salon
 
+        Route::get('/services/{action?}/{href?}', [SalonController::class, 'services'])->name('services');
+        Route::post('/services/add-service', [SalonController::class, 'addService'])->name('salon.services.add');
+        Route::put('/services/update-service/{href}', [SalonController::class, 'editService'])->name('salon.services.update');
+
         Route::get('/bookings', [SalonController::class, 'bookings']);
+
+
+        Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');
+
     });
     
     

@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\ServiceType;
+use App\Models\Service;
+
 
 class SalonController extends Controller
 {
     public function index()
-    {
+    {   
         return view('salon.dashboard');
     }
     public function profile(){
@@ -138,6 +141,120 @@ class SalonController extends Controller
     public function bookings(){
         return view('salon.bookings');
     }
+    // Salon Services
+    public function services($action = "list", $href = null){
+        // Fetch service types (for listing)
+        $serviceTypes = ServiceType::where('is_deleted', 0)->where('status', 1)->get();
+    
+        // Fetch services (always define this, even if not used in some cases)
+        $services = Service::where('is_deleted', 0)->where('service_status', 1)->paginate(10);
+    
+        if ($action === "edit" && isset($href)) {
+            // Fetch the specific service
+            $service = Service::where('service_href', $href)->where('is_deleted', 0)->firstOrFail();
+            return view('salon.services', compact('action', 'service', 'serviceTypes','href'));
+        } 
+        elseif ($action === "add") {
+            return view('salon.services', compact('action', 'serviceTypes', 'services'));
+        } 
+        else {
+            // Default case: List services
+            return view('salon.services', compact('action', 'services'));
+        }
+    }
+    
+
+    // Add new salon service
+    public function addService(Request $request)
+    {
+        $request->validate([
+            'service_name'   => 'required|string|max:255',
+            'id_type'        => 'nullable|integer',
+            'service_price'  => 'nullable|numeric',
+            'service_desc'   => 'nullable|string',
+            'service_status' => 'required|integer|in:1,2',
+            'service_photo'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle Service Photo Upload
+        $photoPath = null;
+        if ($request->hasFile('service_photo')) {
+            $photo = $request->file('service_photo');
+            $photoName = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
+            $photoPath = 'uploads/salons/services/' . $photoName;
+
+            // Move to public directory
+            $photo->move(public_path('uploads/salons/services'), $photoName);
+        }
+
+        // Create new service
+        Service::create([
+            'service_name'   => $request->service_name,
+            'service_href'   => Str::random(16),
+            'id_type'        => $request->id_type,
+            'service_price'  => $request->service_price,
+            'service_desc'   => $request->service_desc,
+            'service_status' => $request->service_status,
+            'service_photo'  => $photoPath,
+            'id_added'       => session('user')->id ,
+            'date_added'     => now(),
+        ]);
+
+        // Redirect to services list page with success message
+        return redirect('/services')->with('success', 'Service added successfully!');
+    }
+    // Add new salon service
+    public function editService(Request $request, $href)
+{
+    // Find the service by href
+    $service = Service::where('service_href', $href)->firstOrFail();
+
+    // Validate request data
+    $request->validate([
+        'service_name'   => 'required|string|max:255',
+        'service_status' => 'required|in:1,2',
+        'id_type'        => 'required|exists:service_types,id',
+        'service_price'  => 'required|numeric|min:0',
+        'service_desc'   => 'nullable|string',
+        'service_photo'  => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+    ]);
+
+    // Update service details
+    $service->service_name   = $request->service_name;
+    $service->service_status = $request->service_status;
+    $service->id_type        = $request->id_type;
+    $service->service_price  = $request->service_price;
+    $service->service_desc   = $request->service_desc;
+
+    // Handle image upload
+    if ($request->hasFile('service_photo')) {
+        // Delete old photo if exists
+        if ($service->service_photo && file_exists(public_path($service->service_photo))) {
+            unlink(public_path($service->service_photo));
+        }
+
+        // Upload new photo
+        $photo = $request->file('service_photo');
+        $photoName = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
+        $photoPath = 'uploads/salons/services/' . $photoName;
+
+        // Move to public directory
+        $photo->move(public_path('uploads/salons/services'), $photoName);
+
+        // Update the service photo path
+        $service->service_photo = $photoPath;
+    }
+
+    // Save the updated service
+    $service->save();
+
+    return redirect('/services')->with('success', 'Service updated successfully!');
+}
+
+
+
+
+    // Salon Signup
     public function signup(Request $request)
     {
         // Validate incoming request
