@@ -19,6 +19,7 @@ class Service extends Model
         'service_name',
         'service_href',
         'id_type',
+        'id_salon',
         'service_price',
         'service_desc',
         'service_photo',

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->bigIncrements('service_id');
             $table->integer('service_status')->comment('1: Active, 2: Inactive');
+            $table->bigInteger('id_salon')->nullable();
             $table->string('service_name');
             $table->string('service_href');
             $table->bigInteger('id_type')->nullable();
