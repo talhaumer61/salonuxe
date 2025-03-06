@@ -22,17 +22,16 @@
                                     <a class="nav-link" href="/salons">Salons</a>
                                 </li>
                                 <!-- About and Contact Us links -->
-                                
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/contact">Contact Us</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="javascript:;">More
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                     <ul class="sub-menu">
                                         <li>
-                                            <a  href="#">About Us</a>
-                                        </li>
-                                        <li>
-                                            <a  href="#">Contact Us</a>
+                                            <a  href="about">About Us</a>
                                         </li>
                                         @if(session()->has('user'))
                                         <li>

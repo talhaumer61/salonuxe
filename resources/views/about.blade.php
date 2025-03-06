@@ -1,4 +1,6 @@
-@include('include.header', ['site_title' => 'About Us | Salonuxe'])
+@include('include.navbar', ['site_title' => 'About Us | Salonuxe'])
 @include('include.about.banner')
 @include('include.about.about_us')
+@include('include.about.testimonials')
+@include('include.about.newsletter')
 @include('include.footer')
