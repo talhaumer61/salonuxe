@@ -86,10 +86,18 @@
         });
 
 		</script>
-		<!-- Examples -->
-		
-        <script src="dashboard/js/examples/examples.header.menu.js"></script>
-		
-        <script src="dashboard/js/examples/examples.dashboard.js"></script>
+		{{-- Active tabs in profile page --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var activeTab = '{{ session("activeTab") }}';
+                if (activeTab) {
+                    var tab = document.querySelector(`.nav-link[href="#${activeTab}"]`);
+                    if (tab) {
+                        var bsTab = new bootstrap.Tab(tab);
+                        bsTab.show();
+                    }
+                }
+            });
+        </script>
 	</body>
 </html>

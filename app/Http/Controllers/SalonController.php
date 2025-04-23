@@ -16,9 +16,15 @@ class SalonController extends Controller
     {   
         return view('salon.dashboard');
     }
+    // user profile
     public function profile(){
+        if (!session()->has('activeTab')) {
+            session(['activeTab' => 'overview']); // Default to 'overview' tab
+        }
         return view('salon.profile');
     }
+
+    // salon profile
     public function salon_profile()
     {
         $userId = session('user')->id; // Assuming user_id is stored in session

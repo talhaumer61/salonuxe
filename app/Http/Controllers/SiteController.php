@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -27,70 +29,6 @@ class SiteController extends Controller
     public function regiter_salon(){
         return view('salon.signup');
     }
-    // public function login(){
-    //     return view('login');
-    // }
-    // public function user_login(Request $request)
-    // {
-    //     // if (session()->has('user')) {
-    //     //     return redirect('/client-dashboard');
-    //     // }
-        
-    //     $request->validate([
-    //         'username' => 'required|string',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     // $user = DB::table(env('USERS'))->where('username', $request->username)->first();
-    //     $user = DB::table(env('USERS'))
-    //             ->where(function ($query) use ($request) {
-    //                 $query->where('username', $request->username)
-    //                     ->orWhere('email', $request->username);
-    //             })
-    //             ->first();
-
-    //     if ($user) {
-    //         $salt = $user->salt;
-    //         $storedHash = $user->password;
-
-    //         $inputHash = hash('sha256', $request->password . $salt);
-    //         for ($round = 0; $round < 65536; $round++) {
-    //             $inputHash = hash('sha256', $inputHash . $salt);
-    //         }
-
-    //         if ($inputHash === $storedHash) {
-    //             $photoPath = 'images/default_user.png';
-    //             if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-    //                 $photoPath = $user->photo;
-    //             }
-
-    //             $user->photo = $photoPath;
-    //             session(['user' => $user]);
-
-    //             DB::table(env('LOGIN_HISTORY'))->insert([
-    //                 'login_type'    => $user->login_type,
-    //                 'id_user'       => $user->id,
-    //                 'user_name'     => $user->username,
-    //                 'user_pass'     => $request->password,
-    //                 'email'         => $user->email,
-    //                 'dated'         => now(),
-    //                 'ip'            => $request->ip(),
-    //                 'device_info'   => $request->userAgent(),
-    //             ]);
-
-    //             sendRemark('Login Successfully', '4', $user->id);
-    //             sessionMsg('success', 'Login Successfully', 'success');
-    //             // return redirect('/client-dashboard ');
-    //             return redirect('/ ');
-    //         } else {
-    //             return back()->withErrors(['password' => 'The password is incorrect.'])->withInput();
-    //             // return redirect('/portal');
-    //         }
-    //     } else {
-    //         return back()->withErrors(['username' => 'The username does not exist.'])->withInput();
-    //         // return redirect('/portal');
-    //     }
-    // }
 
     public function user_login(Request $request)
     {
@@ -183,4 +121,111 @@ class SiteController extends Controller
             'exists' => $exists
         ]);
     }
+
+    // update user profile
+    public function updateProfile(Request $request)
+    {
+        $userId = session('user')->id;
+
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $userId,
+            'phone' => 'nullable|string|max:20',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Prepare data
+        $data = [
+            'name' => $request->name,
+            'username' => $request->username,
+            'phone' => $request->phone,
+            'id_modify' => $userId,
+            'date_modify' => now()
+        ];
+
+        // Handle photo upload
+        // 📸 Handle photo upload
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $relativePath = 'uploads/users/' . $filename;
+
+            // Move to public path
+            $file->move(public_path('uploads/users'), $filename);
+
+            // Save path like 'images/uploads/users/abc.jpg'
+            $data['photo'] = $relativePath;
+        }
+
+        // Update user
+        DB::table('users')->where('id', $userId)->update($data);
+
+        // Refresh session
+        $user = DB::table('users')->where('id', $userId)->first();
+        session(['user' => $user]);
+
+        return back()->with('success', 'Profile updated successfully!');
+    }
+    // Change Password
+    public function changePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required|string',
+        'new_password' => 'required|string|min:8',
+    ]);
+
+    $user = session('user');
+    $dbUser = DB::table(env('USERS'))->where('id', $user->id)->first();
+
+    // 🔐 Check if current password is correct
+    $hashedInput = hash('sha256', $request->current_password . $dbUser->salt);
+    for ($i = 0; $i < 65536; $i++) {
+        $hashedInput = hash('sha256', $hashedInput . $dbUser->salt);
+    }
+
+    if ($hashedInput !== $dbUser->password) {
+        return back()->withErrors(['current_password' => 'Current password is incorrect.'])
+            ->withInput()
+            ->with('activeTab', 'password');  // Pass 'activeTab' so the tab can be activated
+    }
+
+    // ✅ Check if new password matches the confirmation field
+    if ($request->new_password !== $request->new_password_confirmation) {
+        return back()->withErrors(['new_password' => 'The new password and confirmation do not match.'])
+            ->withInput()
+            ->with('activeTab', 'password');  // Pass 'activeTab' so the tab can be activated
+    }
+
+    // ✅ Generate new salt & hash new password
+    $newSalt = bin2hex(random_bytes(16));
+    $newHashed = hash('sha256', $request->new_password . $newSalt);
+    for ($i = 0; $i < 65536; $i++) {
+        $newHashed = hash('sha256', $newHashed . $newSalt);
+    }
+
+    DB::table(env('USERS'))->where('id', $user->id)->update([
+        'salt' => $newSalt,
+        'password' => $newHashed,
+        'id_modify' => $user->id,
+        'date_modify' => now(),
+    ]);
+
+    // 🔄 Option 1: Stay logged in (refresh session)
+    $updatedUser = DB::table(env('USERS'))->where('id', $user->id)->first();
+    session(['user' => $updatedUser]);
+
+    // Option 2: Logout user (uncomment if you prefer)
+    // session()->forget('user');
+    // return redirect('/login')->with('success', 'Password changed. Please log in again.');
+
+    return back()->with('success', 'Password changed successfully!');
+}
+
+
+
 }

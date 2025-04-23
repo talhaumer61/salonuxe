@@ -12,6 +12,9 @@ class ClientController extends Controller
         return view('client.dashboard');
     }
     public function profile(){
+        if (!session()->has('activeTab')) {
+            session(['activeTab' => 'overview']); // Default to 'overview' tab
+        }
         return view('client.profile');
     }
     public function bookings(){

@@ -56,11 +56,14 @@ Route::middleware([AdminVerification::class])->group(function () {
 
 // Routes Accessible Only to Logged-in Users (Protected Routes)
 Route::middleware([CheckAuthentication::class])->group(function () {
+
+    Route::post('/change-password', [SiteController::class, 'changePassword'])->name('change.password');
+    Route::post('/update-profile', [SiteController::class, 'updateProfile'])->name('profile.update');
     
     // Routes Accessible Only to Clients (login_type = 2)
     Route::middleware([ClientVerification::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('clientDashboard');
-        Route::get('/profile', [ClientController::class, 'profile']);
+        Route::get('/user-profile', [ClientController::class, 'profile']);
         Route::get('/bookings', [ClientController::class, 'bookings']);
     });
 
@@ -68,6 +71,7 @@ Route::middleware([CheckAuthentication::class])->group(function () {
     Route::middleware([SalonVerification::class])->group(function () {
         Route::get('/salon-dashboard', [SalonController::class, 'index'])->name('salonDashboard');
         Route::get('/profile', [SalonController::class, 'profile']);
+
         Route::get('/salon-profile', [SalonController::class, 'salon_profile']);
         Route::post('/salon/add', [SalonController::class, 'addSalon'])->name('add.salon'); // Add new salon
         Route::put('/salon/update', [SalonController::class, 'updateSalon'])->name('update.salon'); // Update existing salon
