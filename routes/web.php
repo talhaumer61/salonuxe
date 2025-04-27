@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 // Main Website Routes
 Route::get('/', [SiteController::class, 'home']);
-Route::get('/available-services', [SiteController::class, 'services']);
+Route::get('/available-services/{href?}', [SiteController::class, 'services']);
 Route::get('/salons', [SiteController::class, 'salons']);
 Route::get('/about', [SiteController::class, 'about']);
 Route::get('/contact', [SiteController::class, 'contact']);

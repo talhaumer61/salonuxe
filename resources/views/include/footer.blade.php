@@ -4,7 +4,7 @@
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div>
                     <div class="footer-logo">
-                        <img src="images/footer-logo.png" alt="img">
+                        <img src="{{asset('images/logo.png')}}" alt="logo" height="70px">
                     </div>
                     <div class="footer-pera">
                         <p>Lorem Ipsum is simply dummy text of the printing and
@@ -56,34 +56,34 @@
                     <h5>Instagram post</h5>
                     <ul>
                         <li>
-                            <a href="javascript:;"><img src="images/insta-blog1.png" alt="img">
+                            <a href="javascript:;"><img src="{{asset('images/insta-blog1.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
 
                         </li>
                         <li class="insta-post-gap">
-                            <a href="javascript:;"> <img src="images/insta-blog4.png" alt="img">
+                            <a href="javascript:;"> <img src="{{asset('images/insta-blog4.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:;"><img src="images/insta-blog2.png" alt="img">
+                            <a href="javascript:;"><img src="{{asset('images/insta-blog2.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
 
                         </li>
                         <li class="insta-post-gap">
-                            <a href="javascript:;"> <img src="images/insta-blog5.png" alt="img">
+                            <a href="javascript:;"> <img src="{{asset('images/insta-blog5.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:;"><img src="images/insta-blog3.png" alt="img">
+                            <a href="javascript:;"><img src="{{asset('images/insta-blog3.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
                         </li>
                         <li class="insta-post-gap">
-                            <a href="javascript:;"><img src="images/insta-blog6.png" alt="img">
+                            <a href="javascript:;"><img src="{{asset('images/insta-blog6.png')}}" alt="img">
                                 <span><i class="fab fa-instagram"></i></span>
                             </a>
                         </li>

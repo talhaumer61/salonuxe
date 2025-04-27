@@ -9903,3 +9903,12 @@ ul {
 .register-salon-btn{
   color: var(--maroon);
 }
+.item-card {
+  transition: all 0.3s ease;
+  transform: perspective(1000px);
+}
+
+.item-card:hover {
+  transform: perspective(1000px) scale(1.05);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}

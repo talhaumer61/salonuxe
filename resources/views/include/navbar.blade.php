@@ -5,7 +5,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-6 col-sm-6 col-6">
                     <a class="navbar-brand" href="/">
-                        <img src="{{ asset('images/logo.png') }}" alt="logo">
+                        <img src="{{ asset('images/logo.png') }}" alt="logo" height="70px">
                     </a>
                 </div>
                 <div class="col-lg-10 col-md-6 d-xl-block d-lg-block d-md-none d-sm-none d-none">
@@ -113,7 +113,7 @@
 <div class="mobile-menu-wrapper">
     <div id="sidebar">
         <div class="logo">
-            <img src="images/logo.png" alt="logo">
+            <img src="{{asset('images/logo.png')}}" alt="logo" height="70px">
         </div>
         <div id="toggle-close">&times;</div>
         <div id="cssmenu">

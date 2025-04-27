@@ -17,9 +17,40 @@ class SiteController extends Controller
     public function salons(){
         return view('salons');
     }
-    public function services(){
-        return view('services');
+    public function services($href = null)
+{
+    $query = DB::table('services')
+        ->join('service_types', 'services.id_type', '=', 'service_types.id')
+        ->join('salons', 'services.id_salon', '=', 'salons.salon_id') // join salons
+        ->leftJoin('cities', 'salons.id_city', '=', 'cities.id') // join cities (leftJoin because some salons might not have a city)
+        ->where('services.service_status', 1)
+        ->where('services.is_deleted', 0)
+        ->where('service_types.status', 1)
+        ->where('service_types.is_deleted', 0)
+        ->where('salons.is_deleted', 0)
+        ->where('salons.salon_status', 1)
+        ->select(
+            'services.*',
+            'service_types.name as type_name',
+            'service_types.href as type_href',
+            'salons.salon_name',
+            'cities.name as city_name'
+        )
+        ->inRandomOrder();
+
+    if ($href) {
+        $query->where('service_types.href', $href);
     }
+
+    $services = $query->get()->groupBy('id_type')
+        ->map(function ($group) {
+            return $group->take(7);
+        });
+
+    return view('services', compact('services', 'href'));
+}
+
+    
     public function about(){
         return view('about');
     }

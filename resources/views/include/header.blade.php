@@ -25,16 +25,17 @@
     <link rel="shortcut icon" type="image/png" href="{{asset('images/favicon.png')}}">
 
     <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
 </head>
 
 <body>
     <a href="javascript:;" id="return-to-top"> <i class="fas fa-angle-double-up"></i></a>
     <!-- preloader start -->
-    <div id="preloader">
+    {{-- <div id="preloader">
         <div id="status">
             <img src="{{asset('images/loader.gif')}}" id="preloader_image" alt="loader">
         </div>
-    </div>
+    </div> --}}
 
         
