@@ -35,7 +35,7 @@
                                     </div>
                                 
                                     <div class="card-footer bg-transparent text-center border-0">
-                                        <a href="#" class="btn btn-outline-primary btn-sm">Book Now</a>
+                                        <a href="/book-appointment" class="btn btn-outline-primary btn-sm">Book Now</a>
                                     </div>
                                 </div>
                                 

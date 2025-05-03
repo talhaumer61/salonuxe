@@ -22,6 +22,7 @@ Route::get('/contact', [SiteController::class, 'contact']);
 
 // Routes Accessible Only to Guests (Prevent Logged-in Users from Accessing Login/Signup)
 Route::middleware([RedirectAuthenticatedUser::class])->group(function () {
+    // ADMIN LOGIN 
     Route::get('/admin-login', [AdminController::class, 'adminLogin']);
     Route::post('/admin-login', [AdminController::class, 'login'])->name('adminLogin');
     
@@ -44,6 +45,10 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
     Route::get('/admin-profile', [AdminController::class, 'profile']);
     Route::get('/appointments', [AdminController::class, 'appointments']);
+    Route::get('/added-services', [AdminController::class, 'added_services']);
+    // APPROVE/REJECT SERVICE
+    Route::get('/admin/services/change-status/{href}/{status}', [AdminController::class, 'changeStatus'])->name('admin.services.changeStatus');
+
     Route::get('/users', [AdminController::class, 'users']);
     Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
 
@@ -65,6 +70,7 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('clientDashboard');
         Route::get('/user-profile', [ClientController::class, 'profile']);
         Route::get('/bookings', [ClientController::class, 'bookings']);
+        Route::get('/book-appointment', [ClientController::class, 'book_appointment']);
     });
 
     // Routes Accessible Only to Salons (login_type = 3)

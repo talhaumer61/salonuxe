@@ -64,6 +64,18 @@
                                     </a>
                                 </li>
                                 @endif
+                                
+                                <!-- Show Dashboard link only if user is logged in salon-->
+                                @if(session()->has('user') && session('user')->login_type==1)
+                                <li class="nav-item d-flex">
+                                    <a class="nav-link" href="/admin">
+                                        <div class="main-btn">
+                                            <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em>
+                                            <span>Dashboard</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                @endif
 
                                 <!-- Show Login and Register links only if user is NOT logged in -->
                                 @if(!session()->has('user'))

@@ -156,7 +156,9 @@ class SalonController extends Controller
         $serviceTypes = ServiceType::where('is_deleted', 0)->where('status', 1)->get();
 
         // Fetch services (always define this, even if not used in some cases)
-        $services = Service::where('is_deleted', 0)->where('service_status', 1)->paginate(10);
+        $services = Service::where('is_deleted', 0)
+        ->where('id_salon', session('user')->salon_id)
+        ->where('service_status', [1,2])->paginate(10);
 
         if ($action === "edit" && isset($href)) {
             // Fetch the specific service
@@ -186,7 +188,6 @@ class SalonController extends Controller
             'id_type'        => 'nullable|integer',
             'service_price'  => 'nullable|numeric',
             'service_desc'   => 'nullable|string',
-            'service_status' => 'required|integer|in:1,2',
             'service_photo'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -208,7 +209,7 @@ class SalonController extends Controller
             'id_type'        => $request->id_type,
             'service_price'  => $request->service_price,
             'service_desc'   => $request->service_desc,
-            'service_status' => $request->service_status,
+            'service_status' => 2,
             'service_photo'  => $photoPath,
             'id_salon'       => session('user')->salon_id ,
             'id_added'       => session('user')->id ,
@@ -230,7 +231,6 @@ class SalonController extends Controller
         // Validate request data
         $request->validate([
             'service_name'   => 'required|string|max:255',
-            'service_status' => 'required|in:1,2',
             'id_type'        => 'required|exists:service_types,id',
             'service_price'  => 'required|numeric|min:0',
             'service_desc'   => 'nullable|string',
@@ -239,7 +239,6 @@ class SalonController extends Controller
 
         // Update service details
         $service->service_name   = $request->service_name;
-        $service->service_status = $request->service_status;
         $service->id_type        = $request->id_type;
         $service->service_price  = $request->service_price;
         $service->service_desc   = $request->service_desc;

@@ -20,6 +20,45 @@ class AdminController extends Controller
     public function appointments(){
         return view('admin.bookings');
     }
+    public function added_services(){
+        $services = DB::table('services')
+        ->join('salons', 'services.id_salon', '=', 'salons.salon_id')
+        ->join('service_types', 'services.id_type', '=', 'service_types.id')
+        ->where('services.is_deleted', false)
+        ->whereIn('services.service_status', [1, 2, 3])
+        ->select(
+            'services.*',
+            'service_types.name AS category',
+            'salons.salon_name'
+        )
+        ->orderByRaw("FIELD(services.service_status, 2, 1, 3)")
+        ->paginate(10);
+
+        return view('admin.services', compact('services'));
+    }
+    // // APPROVE/REJECT SERVICE
+    public function changeStatus($href, $status)
+    {
+        // Optional: validate status
+        if (!in_array($status, [1, 3])) {
+            return redirect()->back()->with('error', 'Invalid status selected.');
+        }
+
+        $service = DB::table('services')->where('service_href', $href)->first();
+
+        if (!$service) {
+            return redirect()->back()->with('error', 'Service not found.');
+        }
+
+        DB::table('services')
+            ->where('service_href', $href)
+            ->update([
+                'service_status' => $status
+            ]);
+
+        return redirect()->back()->with('success', 'Service status updated successfully.');
+    }
+
     public function users(){
         $users = DB::table('users')
         ->where('is_deleted', 0)

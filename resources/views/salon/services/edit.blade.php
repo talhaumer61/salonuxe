@@ -35,7 +35,7 @@
                                         <input type="text" class="form-control form-control-modern" name="service_name" value="{{ old('service_name', $service->service_name ?? '') }}" required="">
                                     </div>
                                 </div>
-                                <div class="form-group row align-items-center pb-3">
+                                {{-- <div class="form-group row align-items-center pb-3">
                                     <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Status</label>
                                     <div class="col-lg-7 col-xl-10">
                                         <select class="form-control form-control-modern" name="service_status">
@@ -43,7 +43,7 @@
                                             <option value="2" {{ (isset($service) && $service->service_status == 2) ? 'selected' : '' }}>Inactive</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="form-group row align-items-center pb-3">
                                     <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Type</label>
                                     <div class="col-lg-7 col-xl-10">

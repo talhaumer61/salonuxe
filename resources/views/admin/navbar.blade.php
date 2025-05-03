@@ -44,7 +44,7 @@
                             <i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="/added-services">
                                         List
                                     </a>
                                 </li>
