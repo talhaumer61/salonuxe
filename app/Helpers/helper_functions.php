@@ -134,3 +134,12 @@ function get_service_status($id) {
                             '3' => '<span class="badge bg-danger p-2 rounded">Rejected</span>');
     return $liststatus[$id];
 }
+
+// Get Appointment Status
+function get_booking_status($id) {
+    $liststatus= array (
+                            '1' => '<span class="badge bg-success p-2 rounded">Accepted</span>', 
+                            '2' => '<span class="badge bg-warning p-2 rounded">Pending</span>',
+                            '3' => '<span class="badge bg-danger p-2 rounded">Rejected</span>');
+    return $liststatus[$id];
+}

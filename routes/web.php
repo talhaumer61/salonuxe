@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 // Main Website Routes
 Route::get('/', [SiteController::class, 'home']);
-Route::get('/available-services/{href?}', [SiteController::class, 'services']);
+Route::get('/available-services/{href?}', [SiteController::class, 'available_services']);
 Route::get('/salons', [SiteController::class, 'salons']);
 Route::get('/about', [SiteController::class, 'about']);
 Route::get('/contact', [SiteController::class, 'contact']);
@@ -69,8 +69,14 @@ Route::middleware([CheckAuthentication::class])->group(function () {
     Route::middleware([ClientVerification::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('clientDashboard');
         Route::get('/user-profile', [ClientController::class, 'profile']);
-        Route::get('/bookings', [ClientController::class, 'bookings']);
-        Route::get('/book-appointment', [ClientController::class, 'book_appointment']);
+        Route::get('/my-bookings', [ClientController::class, 'bookings']);
+
+        // BOOK APPOINTMENT
+        Route::get('/book-appointment/{href}', [ClientController::class, 'book_appointment']);
+        Route::post('/make-appointment', [ClientController::class, 'makeAppointment'])->name('make.appointment');
+        // DELETE APPOINTMENT
+        Route::delete('/appointments/delete/{href}', [ClientController::class, 'deleteAppointment'])->name('appointments.delete');
+
     });
 
     // Routes Accessible Only to Salons (login_type = 3)

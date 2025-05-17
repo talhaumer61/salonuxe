@@ -17,7 +17,7 @@ class SiteController extends Controller
     public function salons(){
         return view('salons');
     }
-    public function services($href = null)
+    public function available_services($href = null)
     {
         $query = DB::table('services')
             ->join('service_types', 'services.id_type', '=', 'service_types.id')
@@ -34,6 +34,7 @@ class SiteController extends Controller
                 'service_types.name as type_name',
                 'service_types.href as type_href',
                 'salons.salon_name',
+                'salons.salon_logo',
                 'cities.name as city_name'
             )
             ->inRandomOrder();

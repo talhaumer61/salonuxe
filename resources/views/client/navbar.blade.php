@@ -27,7 +27,7 @@
                             <i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="nav-link" href="/bookings">
+                                    <a class="nav-link" href="/my-bookings">
                                         List
                                     </a>
                                 </li>
@@ -228,7 +228,7 @@
         <div id="userbox" class="userbox">
             <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="">
                 <figure class="profile-picture">
-                    <img src="{{ session('user')->photo }}" alt="Joseph Doe" class="rounded-circle" data-lock-picture="dashboard/img/!logged-user.jpg">
+                    <img src="{{asset(''.session('user')->photo.'')}}" alt="Joseph Doe" class="rounded-circle" data-lock-picture="dashboard/img/!logged-user.jpg">
                 </figure>
                 <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
                     <span class="name">{{ session('user')->name }}</span>

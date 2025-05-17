@@ -16,7 +16,7 @@
                                         <img src="{{ asset($service->service_photo) }}" class="card-img-top" alt="Background">
                                 
                                         <div class="position-absolute top-100 start-50 translate-middle-x" style="margin-top: -25px;">
-                                            <img src="{{ asset($service->service_photo) }}" class="rounded-circle bg-white p-1" style="width: 50px; height: 50px;" alt="{{ $service->service_name }}">
+                                            <img src="{{ asset($service->salon_logo) }}" class="rounded-circle bg-white p-1" style="width: 50px; height: 50px;" alt="{{ $service->service_name }}">
                                         </div>
                                     </div>
                                 
@@ -35,7 +35,7 @@
                                     </div>
                                 
                                     <div class="card-footer bg-transparent text-center border-0">
-                                        <a href="/book-appointment" class="btn btn-outline-primary btn-sm">Book Now</a>
+                                        <a href="/book-appointment/{{ $service->service_href }}" class="btn btn-outline-primary btn-sm">Book Now</a>
                                     </div>
                                 </div>
                                 
