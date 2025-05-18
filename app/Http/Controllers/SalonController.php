@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -268,9 +269,34 @@ class SalonController extends Controller
         return redirect('/services')->with('success', 'Service updated successfully!');
     }
 
+    // Bookings
     public function bookings(){
-        return view('salon.bookings');
+        $salonId = session('user')->salon_id;
+
+        $appointments = DB::table('appointments')
+            ->join('services', 'appointments.id_service', '=', 'services.service_id')
+            ->where('appointments.id_salon', $salonId)
+            ->where('appointments.is_deleted', 0)
+            ->orderByRaw("FIELD(appointments.status, 2, 1, 3)") // 2: Pending, 1: Accepted, 3: Rejected
+            ->select(
+                'appointments.*',
+                'services.*',
+            )
+            ->paginate(10);
+
+        return view('salon.bookings', compact('appointments'));
     }
+    public function updateStatus(Request $request, $href)
+    {
+        $appointment = Appointment::where('href', $href)->firstOrFail();
+        $appointment->status = $request->status;
+        $appointment->save();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
 
     // Salon Signup
     public function signup(Request $request)

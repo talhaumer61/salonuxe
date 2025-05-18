@@ -93,6 +93,8 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::put('/services/update-service/{href}', [SalonController::class, 'editService'])->name('salon.services.update');
 
         Route::get('/bookings', [SalonController::class, 'bookings']);
+        Route::post('/appointments/update-status/{href}', [SalonController::class, 'updateStatus']);
+
 
 
         Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');

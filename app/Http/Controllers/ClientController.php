@@ -81,7 +81,7 @@ class ClientController extends Controller
             'date_added' => now(),
         ]);
 
-        return redirect('/my-booking')->with('success', 'Appointment request submitted successfully.');
+        return redirect('/my-bookings')->with('success', 'Appointment request submitted successfully.');
     }
     // DELETE APPOINTMENT
     public function deleteAppointment($href)

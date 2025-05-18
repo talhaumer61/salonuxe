@@ -30,6 +30,10 @@ return new class extends Migration
             $table->string('appointment_date');
             $table->string('appointment_time');
 
+            // Completion Status
+            $table->boolean('is_completed')->default(false)->comment('1 = completed');
+
+
             // Audit fields
             $table->bigInteger('id_added')->nullable();
             $table->bigInteger('id_modify')->nullable();
