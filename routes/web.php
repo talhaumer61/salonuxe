@@ -4,6 +4,8 @@ use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FaqsController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SiteController;
 use App\Http\Middleware\AdminVerification;
@@ -22,6 +24,14 @@ Route::get('/contact', [SiteController::class, 'contact']);
 
 // Routes Accessible Only to Guests (Prevent Logged-in Users from Accessing Login/Signup)
 Route::middleware([RedirectAuthenticatedUser::class])->group(function () {
+
+    Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.redirect');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
+
+    // Separate route for salon Google signup
+    Route::get('/auth/google/salon', [GoogleAuthController::class, 'redirectToGoogleSalon'])->name('google.salon.redirect');
+    Route::get('/auth/google/salon/callback', [GoogleAuthController::class, 'handleGoogleCallbackSalon'])->name('google.salon.callback');
+
     // ADMIN LOGIN 
     Route::get('/admin-login', [AdminController::class, 'adminLogin']);
     Route::post('/admin-login', [AdminController::class, 'login'])->name('adminLogin');
@@ -50,10 +60,17 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::get('/admin/services/change-status/{href}/{status}', [AdminController::class, 'changeStatus'])->name('admin.services.changeStatus');
 
     Route::get('/users', [AdminController::class, 'users']);
-    Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
 
+    // SERVICE TYPES
+    Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
     Route::post('/service-types/add', [ServicesController::class, 'add_service_type'])->name('service_types.add');
     Route::put('/service-types/update/{href}', [ServicesController::class, 'edit_service_type'])->name('service_types.update');
+
+    // FAQS
+    Route::get('/faqs/{action?}/{id?}', [FaqsController::class, 'faqs'])->name('faqs.index');
+    Route::post('/faqs/store', [FaqsController::class, 'store'])->name('faqs.store');
+    Route::put('/faqs/update/{id}', [FaqsController::class, 'update'])->name('faqs.update');
+
 
     Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');
 

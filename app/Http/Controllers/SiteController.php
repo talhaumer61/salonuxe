@@ -52,8 +52,14 @@ class SiteController extends Controller
     }
 
     
-    public function about(){
-        return view('about');
+    public function about() {
+        $faqs = DB::table('faqs')
+            ->where('is_deleted', 0)
+            ->where('status', 1) // show only active ones
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('about', compact('faqs'));
     }
     public function contact(){
         return view('contact');
@@ -69,7 +75,7 @@ class SiteController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = DB::table(env('USERS'))
+        $user = DB::table('users')
                 ->where(function ($query) use ($request) {
                     $query->where('username', $request->username)
                         ->orWhere('email', $request->username);
@@ -103,7 +109,7 @@ class SiteController extends Controller
                 $user->photo = $photoPath;
                 session(['user' => $user]);
 
-                DB::table(env('LOGIN_HISTORY'))->insert([
+                DB::table('sl_login_history')->insert([
                     'login_type'    => $user->login_type,
                     'id_user'       => $user->id,
                     'user_name'     => $user->username,
@@ -205,59 +211,54 @@ class SiteController extends Controller
     }
     // Change Password
     public function changePassword(Request $request)
-{
-    $request->validate([
-        'current_password' => 'required|string',
-        'new_password' => 'required|string|min:8',
-    ]);
+    {
+        $user = session('user');
+        $dbUser = DB::table(env('USERS'))->where('id', $user->id)->first();
 
-    $user = session('user');
-    $dbUser = DB::table(env('USERS'))->where('id', $user->id)->first();
+        // ✅ Always validate the new password and its confirmation
+        $request->validate([
+            'new_password' => 'required|string|min:8',
+            'new_password_confirmation' => 'required|same:new_password',
+        ]);
 
-    // 🔐 Check if current password is correct
-    $hashedInput = hash('sha256', $request->current_password . $dbUser->salt);
-    for ($i = 0; $i < 65536; $i++) {
-        $hashedInput = hash('sha256', $hashedInput . $dbUser->salt);
+        // 🛑 Only require old password for users who have one
+        if (!empty($dbUser->password) && !empty($dbUser->salt)) {
+            $request->validate([
+                'current_password' => 'required|string',
+            ]);
+
+            $hashedInput = hash('sha256', $request->current_password . $dbUser->salt);
+            for ($i = 0; $i < 65536; $i++) {
+                $hashedInput = hash('sha256', $hashedInput . $dbUser->salt);
+            }
+
+            if ($hashedInput !== $dbUser->password) {
+                return back()->withErrors(['current_password' => 'Current password is incorrect.'])
+                    ->withInput()
+                    ->with('activeTab', 'password');
+            }
+        }
+
+        // ✅ Set new password and salt
+        $newSalt = bin2hex(random_bytes(16));
+        $newHashed = hash('sha256', $request->new_password . $newSalt);
+        for ($i = 0; $i < 65536; $i++) {
+            $newHashed = hash('sha256', $newHashed . $newSalt);
+        }
+
+        DB::table(env('USERS'))->where('id', $user->id)->update([
+            'salt' => $newSalt,
+            'password' => $newHashed,
+            'id_modify' => $user->id,
+            'date_modify' => now(),
+        ]);
+
+        // Refresh session with updated user data
+        $updatedUser = DB::table(env('USERS'))->where('id', $user->id)->first();
+        session(['user' => $updatedUser]);
+
+        return back()->with('success', 'Password changed successfully!');
     }
-
-    if ($hashedInput !== $dbUser->password) {
-        return back()->withErrors(['current_password' => 'Current password is incorrect.'])
-            ->withInput()
-            ->with('activeTab', 'password');  // Pass 'activeTab' so the tab can be activated
-    }
-
-    // ✅ Check if new password matches the confirmation field
-    if ($request->new_password !== $request->new_password_confirmation) {
-        return back()->withErrors(['new_password' => 'The new password and confirmation do not match.'])
-            ->withInput()
-            ->with('activeTab', 'password');  // Pass 'activeTab' so the tab can be activated
-    }
-
-    // ✅ Generate new salt & hash new password
-    $newSalt = bin2hex(random_bytes(16));
-    $newHashed = hash('sha256', $request->new_password . $newSalt);
-    for ($i = 0; $i < 65536; $i++) {
-        $newHashed = hash('sha256', $newHashed . $newSalt);
-    }
-
-    DB::table(env('USERS'))->where('id', $user->id)->update([
-        'salt' => $newSalt,
-        'password' => $newHashed,
-        'id_modify' => $user->id,
-        'date_modify' => now(),
-    ]);
-
-    // 🔄 Option 1: Stay logged in (refresh session)
-    $updatedUser = DB::table(env('USERS'))->where('id', $user->id)->first();
-    session(['user' => $updatedUser]);
-
-    // Option 2: Logout user (uncomment if you prefer)
-    // session()->forget('user');
-    // return redirect('/login')->with('success', 'Password changed. Please log in again.');
-
-    return back()->with('success', 'Password changed successfully!');
-}
-
 
 
 }

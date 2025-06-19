@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\ServiceType;
 use App\Models\Service;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AppointmentStatusUpdated;
+use Illuminate\Support\Facades\Log;
 
 
 class SalonController extends Controller
@@ -286,16 +289,58 @@ class SalonController extends Controller
 
         return view('salon.bookings', compact('appointments'));
     }
-    public function updateStatus(Request $request, $href)
-    {
-        $appointment = Appointment::where('href', $href)->firstOrFail();
-        $appointment->status = $request->status;
-        $appointment->save();
+    // public function updateStatus(Request $request, $href)
+    // {
+    //     $appointment = Appointment::where('href', $href)->firstOrFail();
+    //     $appointment->status = $request->status;
+    //     $appointment->save();
 
+    //     try {
+    //         if (!empty($appointment->client_email)) {
+    //             Mail::to($appointment->client_email)->send(new AppointmentStatusUpdated($appointment));
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Mail Error: ' . $e->getMessage());
+    //         return response()->json(['success' => false, 'message' => 'Email sending failed.']);
+    //     }
+    //     return response()->json([
+    //         'success' => true,
+    //     ]);
+    // }
+
+    public function updateStatus(Request $request, $href)
+{
+    Log::info('updateStatus called', ['href' => $href, 'status' => $request->status]);
+
+    $appointment = Appointment::where('href', $href)->first();
+
+    if (!$appointment) {
+        Log::error('Appointment not found', ['href' => $href]);
+        return response()->json(['success' => false, 'message' => 'Appointment not found']);
+    }
+
+    $appointment->status = $request->status;
+    $appointment->save();
+
+    try {
+        if (!empty($appointment->client_email)) {
+            Mail::to($appointment->client_email)->send(new AppointmentStatusUpdated($appointment));
+            Log::info('Email sent', ['to' => $appointment->client_email]);
+        }
+    } catch (\Throwable $e) {
+        Log::error('Email failed', ['error' => $e->getMessage()]);
+        // Still return success because status was updated
         return response()->json([
             'success' => true,
+            'message' => 'Status updated, but email failed: ' . $e->getMessage(),
         ]);
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Status and email sent successfully.'
+    ]);
+}
 
 
     // Salon Signup

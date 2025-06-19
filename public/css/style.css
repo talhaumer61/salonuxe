@@ -4850,7 +4850,7 @@ ul {
 
 /*============================ Third accordion ==============================*/
 .accordion3-wrapper {
-  background-color: #f7f7f7;
+  /* background-color: #f7f7f7; */
 }
 .accordion3-wrapper .accordion-button:focus {
   border: none;

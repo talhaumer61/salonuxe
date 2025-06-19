@@ -102,14 +102,17 @@
                     <form action="{{ route('change.password') }}" method="POST">
                         @csrf
                         <div class="row">
-                            <div class="form-group col-12">
-                                <label for="current_password">Current Password</label>
-                                <input type="password" class="form-control" id="current_password" name="current_password" required>
-                                <!-- Display error for current password -->
-                                @if ($errors->has('current_password'))
-                                    <div class="text-danger mt-2">{{ $errors->first('current_password') }}</div>
-                                @endif
-                            </div>
+                            @if (!session('user')->password || !session('user')->salt)
+                                {{-- Google user (no current password) – skip current_password input --}}
+                            @else
+                                <div class="form-group col-12">
+                                    <label for="current_password">Current Password</label>
+                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                    @if ($errors->has('current_password'))
+                                        <div class="text-danger mt-2">{{ $errors->first('current_password') }}</div>
+                                    @endif
+                                </div>
+                            @endif
                             <div class="form-group col-12">
                                 <label for="new_password">New Password</label>
                                 <input type="password" class="form-control" id="new_password" name="new_password" required>

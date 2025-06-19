@@ -82,14 +82,15 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                alert(data.message || 'Status updated');
                 location.reload();
             } else {
-                alert('Failed to update status.');
+                alert(data.message || 'Failed to update status.');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong.');
+            console.error('Fetch error:', error);
+            alert('Something went wrong: ' + error.message);
         });
     }
 </script>

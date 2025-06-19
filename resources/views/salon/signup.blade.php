@@ -81,6 +81,12 @@
                                     <button type="submit" class="btn btn-primary mt-2">Sign Up</button>
                                 </div>
                             </div>
+                            <div class="text-center my-3">
+                                <a href="{{ route('google.salon.redirect') }}" class="btn btn-outline-danger w-100">
+                                    <i class="fab fa-google me-2"></i> Sign up with Google
+                                </a>
+                            </div>
+
                             {{-- <p class="text-center">Already have an account? <a href="/login">Sign In!</a></p> --}}
                         </form>
 					</div>

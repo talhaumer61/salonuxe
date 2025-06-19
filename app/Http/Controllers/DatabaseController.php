@@ -10,6 +10,7 @@ class DatabaseController extends Controller
 {
     public function deleteRecord(Request $request)
     {
+        dd($request);
         $request->validate([
             'table' => 'required|string',
             'id' => 'required|integer',

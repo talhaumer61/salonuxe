@@ -1,4 +1,4 @@
-<div class="testimonial-wrapper float-left pt-3">
+<div class="testimonial-wrapper float-left pt-3 pb-5">
     <div class="testimonial-content-wrapper float-left">
         <div class="container">
             <div class="row">

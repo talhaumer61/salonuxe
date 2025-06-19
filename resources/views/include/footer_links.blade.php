@@ -1,24 +1,26 @@
-<script src="js/jquery-3.6.4.min.js"></script>
-<script src="js/jquery.magnific-popup.js"></script>
+<script src="{{asset('js/jquery-3.6.4.min.js')}}"></script>
+<script src="{{asset('js/jquery.magnific-popup.js')}}"></script>
 <!-- Bootstrap JS-->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/swiper.min.js"></script>
-<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<script src="{{asset('js/swiper.min.js')}}"></script>
+<script src="{{asset('js/bootstrap-datepicker.min.js')}}"></script>
 <!-- Owl Carousel JS -->
-<script src="js/owl.carousel.js"></script>
-<script src="js/owl.carousel.min.js"></script>
+<script src="{{asset('js/owl.carousel.js')}}"></script>
+<script src="{{asset('js/owl.carousel.min.js')}}"></script>
 <!-- Animation Js -->
-<script src="js/wow.js"></script>
+<script src="{{asset('js/wow.js')}}"></script>
 <!-- Custom Js -->
-<script src="js/custom.js"></script>
+<script src="{{asset('js/custom.js')}}"></script>
 <!-- contact form js start -->
-<script src="js/contact_form.js"></script>
+<script src="{{asset('js/contact_form.js')}}"></script>
 <script>
     $(".youtube-link").grtyoutube({
         autoPlay: true,
         theme: "dark",
     });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 {{-- Show Password --}}
 <script>
     function createpassword(inputId, icon) {
@@ -38,79 +40,8 @@
 </script>
 
 {{-- Password Confirmation & Validation --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-{{-- <script>
-    $(document).ready(function () {
-        $("#signup-form").on("submit", function (event) {
-            let isValid = true;
-            event.preventDefault(); // Prevent default form submission
 
-            // Get field values
-            let name = $.trim($("#signup-firstname").val());
-            let email = $.trim($("#signup-email").val());
-            let username = $.trim($("#signup-username").val());
-            let password = $.trim($("#signup-password").val());
-            let confirmPassword = $.trim($("#signup-password-confirm").val());
-            alert(password.length);
-
-            // Clear previous errors
-            clearErrors();
-
-            // Validate Name
-            if (name === "") {
-                showError("#name-error", "Full Name is required.");
-                isValid = false;
-            }
-
-            // Validate Email
-            if (email === "") {
-                showError("#email-error", "Email is required.");
-                isValid = false;
-            } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-                showError("#email-error", "Invalid email format.");
-                isValid = false;
-            }
-
-            // Validate Username
-            if (username === "") {
-                showError("#username-error", "Username is required.");
-                isValid = false;
-            }
-
-            // Validate Password
-            if (password === "") {
-                showError("#password-error", "Password is required.");
-                isValid = false;
-            } else if (password.length < 8) {
-                showError("#password-error", "Password must be at least 8 characters long.");
-                isValid = false;
-            }
-
-            // Validate Confirm Password
-            if (confirmPassword === "") {
-                showError("#confirm-password-error", "Confirm Password is required.");
-                isValid = false;
-            } else if (password !== confirmPassword) {
-                showError("#confirm-password-error", "Passwords do not match.");
-                isValid = false;
-            }
-
-            // Submit form if all validations pass
-            if (isValid) {
-                this.submit();
-            }
-        });
-
-        function showError(selector, message) {
-            $(selector).text(message).removeClass("d-none");
-        }
-
-        function clearErrors() {
-            $(".text-danger").text("").addClass("d-none");
-        }
-    });
-</script> --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- Sign up --}}
 <script>
     $(document).ready(function () {
         $("#signup-form").on("submit", function (event) {
@@ -201,6 +132,7 @@
 
 
 {{-- Check Email & Username Availability --}}
+
 <script>
     $(document).ready(function () {
         function checkAvailability(field, value, errorElement) {

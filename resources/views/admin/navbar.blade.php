@@ -81,8 +81,8 @@
                                     <i class="fas fa-caret-down"></i></a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="nav-link" href="#">
-                                                Basic
+                                            <a class="nav-link" href="/faqs">
+                                                Faq's
                                             </a>
                                         </li>
                                         <li>

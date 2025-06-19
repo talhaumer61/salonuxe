@@ -61,7 +61,13 @@
           
 
 		</script>
-
+        {{-- CK-EDITOR --}}
+        <script>
+            document.querySelectorAll('[id^="ckeditor"]').forEach(function(element){
+                CKEDITOR.replace(element); 
+            });
+        </script>
+        
         <script>
             // Wait for the DOM to load
             document.addEventListener("DOMContentLoaded", function () {
@@ -99,7 +105,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            function confirmDelete(table, id, column) {
+            function confirmDelete(button, table, id, column) {
                 Swal.fire({
                     title: "Are you sure?",
                     text: "You are about to delete this record.",
@@ -111,8 +117,8 @@
                     cancelButtonText: "Cancel"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Disable button to prevent multiple clicks
-                        $(".delete-btn").prop("disabled", true);
+                        // Disable only the clicked button
+                        $(button).prop("disabled", true);
 
                         $.ajax({
                             url: "{{ route('delete.record') }}",
@@ -124,6 +130,7 @@
                                 column: column
                             },
                             success: function(response) {
+                                console.log(table, id, column);
                                 Swal.fire({
                                     title: "Deleted!",
                                     text: response.message,
@@ -141,8 +148,8 @@
                                 }
                                 Swal.fire("Error!", errorMessage, "error");
 
-                                // Re-enable button in case of error
-                                $(".delete-btn").prop("disabled", false);
+                                // Re-enable only this button
+                                $(button).prop("disabled", false);
                             }
                         });
                     }
@@ -150,12 +157,5 @@
             }
         </script>
 
-        
-
-		<!-- Examples -->
-		
-        <script src="{{asset('dashboard/js/examples/examples.header.menu.js')}}"></script>
-		
-        <script src="{{asset('dashboard/js/examples/examples.dashboard.js')}}"></script>
 	</body>
 </html>

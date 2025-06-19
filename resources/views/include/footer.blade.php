@@ -207,6 +207,10 @@
                                     <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Log In</span>
                                 </button>
                             </div>
+                            <p class="text-center mb-2">or</p>
+                            <a href="{{ route('google.redirect') }}" class="btn btn-outline-danger w-100">
+                                <i class="fab fa-google me-2"></i> Login with Google
+                            </a>
                         </form>
                         
                     </div>
@@ -269,6 +273,12 @@
                                     <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Sign Up</span>
                                 </button>
                             </div>
+                            <div class="text-center mt-3">
+                                <a href="{{ route('google.redirect') }}" class="btn btn-outline-danger w-100">
+                                    <i class="fab fa-google me-2"></i> Sign up with Google
+                                </a>
+                            </div>
+
                             <div class="text-center py-3">
                                 <p>Salon Owner? <a class="register-salon-btn" href="/register-salon">Register Salon</a></p>
                             </div>

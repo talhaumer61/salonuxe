@@ -112,8 +112,8 @@ class ClientController extends Controller
         // Validate incoming request
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:' . env('USERS') . ',username',
-            'email' => 'required|string|email|max:255|unique:' . env('USERS') . ',email',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed', // Password confirmation field required
         ]);
 
@@ -131,7 +131,7 @@ class ClientController extends Controller
         $photoPath = 'images/default_user.png';
 
         // Insert user into the database
-        $userId = DB::table(env('USERS'))->insertGetId([
+        $userId = DB::table('users')->insertGetId([
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
