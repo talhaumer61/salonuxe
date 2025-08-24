@@ -17,8 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 // Main Website Routes
 Route::get('/', [SiteController::class, 'home']);
-Route::get('/available-services/{href?}', [SiteController::class, 'available_services']);
+// Route::get('/available-services/{href?}', [SiteController::class, 'available_services']);
+Route::match(['get', 'post'], '/available-services/{href?}', [SiteController::class, 'available_services']);
+
 Route::get('/salons', [SiteController::class, 'salons']);
+Route::get('/salon/{href}', [SiteController::class, 'salonDetail']);
+
 Route::get('/about', [SiteController::class, 'about']);
 Route::get('/contact', [SiteController::class, 'contact']);
 
@@ -60,7 +64,7 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::get('/admin/services/change-status/{href}/{status}', [AdminController::class, 'changeStatus'])->name('admin.services.changeStatus');
 
     Route::get('/users', [AdminController::class, 'users']);
-
+    Route::get('/salons-list', [AdminController::class, 'salons_list']);
     // SERVICE TYPES
     Route::get('/service-types/{action?}/{href?}', [ServicesController::class, 'service_types'])->name('service_types');
     Route::post('/service-types/add', [ServicesController::class, 'add_service_type'])->name('service_types.add');

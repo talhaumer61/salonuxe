@@ -33,19 +33,16 @@
                 <div class="footer-link-wrapper">
                     <h5>Useful links</h5>
                     <ul>
-                        <li><a href="index.html">
+                        <li><a href="/">
                                 <span><i class="fas fa-chevron-right"></i></span> Home
                             </a></li>
-                        <li><a href="about.html">
+                        <li>
+                            <a href="/bout">
                                 <span><i class="fas fa-chevron-right"></i></span> About Us
-                            </a></li>
-                        <li><a href="our-team.html">
-                                <span><i class="fas fa-chevron-right"></i></span> Our Team
-                            </a></li>
-                        <li><a href="appointment.html">
-                                <span><i class="fas fa-chevron-right"></i></span> Booking
-                            </a></li>
-                        <li><a href="contact.html">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/contact">
                                 <span><i class="fas fa-chevron-right"></i></span> Contact Us
                             </a></li>
                     </ul>

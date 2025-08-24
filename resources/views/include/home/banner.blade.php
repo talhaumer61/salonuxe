@@ -35,7 +35,7 @@
                             And Services</h1>
                         <p class="fadeInUpShorter appear-animation-visible appear-animate">Change Your Look
                             With Our Talented Stylists.</p>
-                        <a href="#"
+                        <a href="/available-services"
                             class="banner-btn fadeInUpShorter appear-animation-visible appear-animate">
                             <div class="main-btn-red">
                                 <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Get

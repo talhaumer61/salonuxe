@@ -5,26 +5,15 @@
                 <div class="about-content py-0">
                     <h5>About US</h5>
                     <h3>Why We Are The Best?</h3>
-                    <p>It is a long established fact that a reader will be distracted by the readable content of a
-                        page when
-                        looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-                        distribution
-                        of letters, as opposed to using 'Content here, content here.</p>
-
-                    <p class="about-pera">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                        Lorem Ipsum has been
-                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                        galley of
-                        type and scrambled it to make a type specimen book. It has survived not only five centuries,
-                        but also
-                        the leap into electronic typesetting, remaining essentially unchanged. Lorem Ipsum is simply
-                        dummy
-                        text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
-                        dummy
-                        text ever since the 1500s.</p>
+                    <p>
+                        Salonuxe is a cutting-edge digital platform designed to revolutionize the way customers discover and book salon and beauty services. Our mission is to provide a seamless, convenient, and trustworthy experience by connecting users with top-rated salons and service providers based on location, preferences, and real-time availability.
+                    </p>
+                    <p class="about-pera"> 
+                        With features such as secure online booking, transparent pricing, verified reviews, and service comparisons, Salonuxe empowers customers to make confident decisions while helping salons grow their digital presence. We are committed to enhancing the beauty service industry through innovation, reliability, and customer satisfaction.
+                    </p>
 
                     <div class="about-btn-page">
-                        <a href="appointment.html" class="main-btn-red">
+                        <a href="/available-services" class="main-btn-red">
                             <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Make An
                                 Appointment
                             </span>

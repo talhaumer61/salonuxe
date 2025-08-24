@@ -1,3 +1,37 @@
+<style>
+    .service-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+}
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+.service-image-wrapper {
+    background: #fefefe;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+.service-image {
+    height: 160px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+.service-card:hover .service-image {
+    transform: scale(1.05);
+}
+.service-info {
+    background: rgba(255, 255, 255, 0.95);
+}
+.service-name {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+
+</style>
 <div class="service-wrapper float-left">
     <div class="container">
         <div class="row">
@@ -23,63 +57,21 @@
         </div>
         <div class="service-box-wrapper  wow fade-box animated" style="visibility: visible; animation-name: fade-box;">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                    <div class="service-box">
-                        <div class="service-img">
-                            <div class="service-img-hvr">
-                                <a href="service-mani.html">
-                                    <img src="images/service-one.jpg" class="service-card-img" alt="img">
-                                </a>
-                            </div>
-                            <div class="service-content">
-                                <h5>Hair Extension</h5>
-                            </div>
-                        </div>
-                    </div>
+    @foreach($services as $service)
+        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+            <div class="service-card position-relative rounded-4 overflow-hidden text-center shadow-sm">
+                <div class="service-image-wrapper">
+                    <img src="{{ asset($service->icon) }}" alt="{{ $service->name }}" class="img-fluid service-image">
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                    <div class="service-box">
-                        <div class="service-img">
-                            <div class="service-img-hvr">
-                                <a href="service-padi.html">
-                                    <img src="images/service-two.jpg" class="service-card-img" alt="img">
-                                </a>
-                            </div>
-                            <div class="service-content">
-                                <h5>Facial</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                    <div class="service-box">
-                        <div class="service-img">
-                            <div class="service-img-hvr">
-                                <a href="service-nailart.html">
-                                    <img src="images/service-three.png" class="service-card-img" alt="img">
-                                </a>
-                            </div>
-                            <div class="service-content">
-                                <h5>Nail Art</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 col-12">
-                    <div class="service-box">
-                        <div class="service-img">
-                            <div class="service-img-hvr">
-                                <a href="service-parahand.html">
-                                    <img src="images/service-four.png" class="service-card-img" alt="img">
-                                </a>
-                            </div>
-                            <div class="service-content">
-                                <h5>Paraffin Hands</h5>
-                            </div>
-                        </div>
-                    </div>
+                <div class="service-info py-3 px-2">
+                    <h5 class="service-name fw-bold text-capitalize mb-1">{{ $service->name }}</h5>
+                    <a href="{{ 'available-services/' .$service->href}}" class="btn btn-sm btn-dark mt-2">Explore</a>
                 </div>
             </div>
+        </div>
+    @endforeach
+</div>
+
         </div>
     </div>
 </div>

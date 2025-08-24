@@ -22,7 +22,7 @@
                             </a>    
                         </li>
                         <li class="">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href='/salons-list'>
                                 Salons
                             </a>    
                         </li>

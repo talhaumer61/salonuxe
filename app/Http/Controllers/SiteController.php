@@ -2,27 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\View;
+
 
 class SiteController extends Controller
 {
     public function home(){
-        return view('home');
+        $services = ServiceType::where('status', 1)
+                    ->where('is_deleted', 0)
+                    ->inRandomOrder()
+                    ->limit(4)
+                    ->get();
+
+        return view('home', compact('services'));
     }
 
-    public function salons(){
-        return view('salons');
+    public function salons(Request $request)
+    {
+        $query = DB::table('salons')
+            ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
+            ->select('salons.*', 'cities.name as city_name')
+            ->where('salons.is_deleted', 0)
+            ->where('salons.salon_status', 1);
+
+        if ($request->filled('search')) {
+            $query->where('salons.salon_name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('city')) {
+            $query->where('cities.name', $request->city);
+        }
+
+        $salons = $query->orderByDesc('salons.date_added')->get();
+        $cities = DB::table('cities')->pluck('name');
+
+        // 👇 Use this for AJAX like in services module
+        if ($request->ajax()) {
+            $html = view('salons', compact('salons', 'cities'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('salons', compact('salons', 'cities'));
     }
-    public function available_services($href = null)
+
+
+    public function salonDetail($href)
+    {
+        // Get salon info
+        $salon = DB::table('salons')
+            ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
+            ->where('salon_href', $href)
+            ->where('salons.is_deleted',0)
+            ->select(
+                'salons.*',
+                'cities.name as city_name'
+            )
+            ->first();
+
+        if (!$salon) {
+            abort(404);
+        }
+
+        // Get this salon's services
+        $services = DB::table('services')
+            ->join('service_types', 'services.id_type', '=', 'service_types.id')
+            ->where('services.id_salon', $salon->salon_id)
+            ->where('services.service_status', 1)
+            ->where('services.is_deleted', 0)
+            ->where('service_types.status', 1)
+            ->where('service_types.is_deleted', 0)
+            ->select(
+                'services.*',
+                'service_types.name as type_name',
+                'service_types.href as type_href'
+            )
+            ->get()
+            ->groupBy('id_type');
+
+        return view('salons',compact('salon', 'services', 'href'));
+    }
+
+
+    public function available_services(Request $request, $href = null)
     {
         $query = DB::table('services')
             ->join('service_types', 'services.id_type', '=', 'service_types.id')
-            ->join('salons', 'services.id_salon', '=', 'salons.salon_id') // join salons
-            ->leftJoin('cities', 'salons.id_city', '=', 'cities.id') // join cities (leftJoin because some salons might not have a city)
+            ->join('salons', 'services.id_salon', '=', 'salons.salon_id')
+            ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
             ->where('services.service_status', 1)
             ->where('services.is_deleted', 0)
             ->where('service_types.status', 1)
@@ -36,19 +108,40 @@ class SiteController extends Controller
                 'salons.salon_name',
                 'salons.salon_logo',
                 'cities.name as city_name'
-            )
-            ->inRandomOrder();
+            );
 
         if ($href) {
             $query->where('service_types.href', $href);
         }
 
-        $services = $query->get()->groupBy('id_type')
-            ->map(function ($group) {
-                return $group->take(7);
-            });
+        // Apply filters
+        if ($request->filled('search')) {
+            $query->where('services.service_name', 'LIKE', '%' . $request->search . '%');
+        }
 
-        return view('services', compact('services', 'href'));
+        if ($request->filled('city')) {
+            $query->where('cities.name', $request->city);
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('services.service_price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('services.service_price', '<=', $request->max_price);
+        }
+
+        $services = $query->inRandomOrder()->get()->groupBy('id_type')->map(fn($g) => $g->take(7));
+        $flatServices = $services->flatten(1);
+        $cities = DB::table('cities')->pluck('name');
+
+        // If AJAX, return only services section as rendered HTML
+        if ($request->ajax()) {
+            $html = view('services', compact('services', 'href', 'cities', 'flatServices'))->render();
+            return response()->json(['html' => $html]);
+        } 
+
+        return view('services', compact('services', 'href', 'cities', 'flatServices'));
     }
 
     

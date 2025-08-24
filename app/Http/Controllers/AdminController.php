@@ -17,9 +17,24 @@ class AdminController extends Controller
     public function profile(){
         return view('admin.profile');
     }
-    public function appointments(){
-        return view('admin.bookings');
+    public function appointments()
+    {
+        $appointments = DB::table('appointments')
+            ->leftJoin('services', 'appointments.id_service', '=', 'services.service_id')
+            
+            ->leftJoin('salons', 'appointments.id_salon', '=', 'salons.salon_id')
+            ->select(
+                'appointments.*',
+                'services.service_name',
+                'salons.salon_name'
+            )
+            ->where('appointments.is_deleted', 0)
+            ->orderByDesc('appointments.date_added')
+            ->get();
+
+        return view('admin.bookings', compact('appointments'));
     }
+
     public function added_services(){
         $services = DB::table('services')
         ->join('salons', 'services.id_salon', '=', 'salons.salon_id')
@@ -69,7 +84,26 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
 
     }
-    
+    public function salons_list()
+    {
+        $salons = DB::table('salons')
+            ->leftJoin('users', 'salons.id_user', '=', 'users.id')
+            ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
+            ->select(
+                'salons.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.phone as user_phone',
+                'users.photo as user_photo',
+                'cities.name as city_name'
+            )
+            ->where('salons.is_deleted', 0)
+            ->orderByDesc('salons.date_added')
+            ->paginate(10);
+
+        return view('admin.salons', compact('salons'));
+    }
+
     public function login(Request $request)
     {
         // if (session()->has('user')) {
