@@ -12,6 +12,24 @@ use Illuminate\Support\Str;
 class ClientController extends Controller
 {
     public function index(){
+        // Email Logic
+        // $email = $request->input('email');
+        // $name = $request->input('name');
+        
+        // $subject = "Welcome to Salonuxe!";
+        // $content = "<h1>Hi, {$name}!</h1><p>Thank you for registering. We're happy to have you.</p>";
+
+        // // Call the helper function
+        // $wasSent = sendEmail($email, $subject, $content);
+
+        // if ($wasSent) {
+        //     // Email sent successfully
+        //     return redirect()->back()->with('success', 'Registration complete! A welcome email has been sent.');
+        // } else {
+        //     // Handle email failure
+        //     return redirect()->back()->with('error', 'Registration complete, but we could not send a welcome email.');
+        // }
+        sessionMsg('danger', 'Welcome to Dashboard', 'danger');
         return view('client.dashboard');
     }
     public function profile(){

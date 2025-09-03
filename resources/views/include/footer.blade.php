@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-6 col-sm-12">
+            <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="footer-link-wrapper">
                     <h5>Useful links</h5>
                     <ul>
@@ -48,7 +48,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            {{-- <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="footer-insta">
                     <h5>Instagram post</h5>
                     <ul>
@@ -86,8 +86,8 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            </div> --}}
+            <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="footer-contact">
                     <h5>Contact Info</h5>
                     <ul>
@@ -98,7 +98,7 @@
                             <div class="address-content">
                                 <a href="javascript:;">
                                     <span>Address</span>
-                                    121 Waldeck Street, NY, USA
+                                    Township, Lahore, Pakistan 
                                 </a>
                             </div>
                         </li>
@@ -109,7 +109,7 @@
                             <div class="address-content">
                                 <a href="javascript:;">
                                     <span>PHONE</span>
-                                    0800-123456, 0800-123489
+                                    +92-300-1234567
                                 </a>
                             </div>
                         </li>
@@ -120,7 +120,7 @@
                             <div class="address-content">
                                 <a href="javascript:;">
                                     <span>EMAIL</span>
-                                    nailsalon@example.com
+                                    info@salonuxe.com
                                 </a>
                             </div>
                         </li>

@@ -40,15 +40,10 @@
                     <div class="service-content">
                         <h5>Our Services</h5>
                         <h3>What We Offer</h3>
-                        <p>It is a long established fact that a reader will be distracted by the readable content of
-                            a page when looking at its
-                            ayout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
-                            of letters, as opposed to
-                            using 'Content here, content here', making it look like readable English.</p>
                     </div>
-                    <a href="service-left.html" class="service-btn">
+                    <a href="/available-services" class="service-btn">
                         <div class="main-btn">
-                            <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Read More
+                            <em><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></em><span>Explore All Services
                             </span>
                         </div>
                     </a>

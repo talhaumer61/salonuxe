@@ -3,6 +3,8 @@ use App\Models\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Message;
 
 // CHECK EXISTANCE GLOBAL VAR
 if (!function_exists('globalVar')) {
@@ -142,4 +144,20 @@ function get_booking_status($id) {
                             '2' => '<span class="badge bg-warning p-2 rounded">Pending</span>',
                             '3' => '<span class="badge bg-danger p-2 rounded">Rejected</span>');
     return $liststatus[$id];
+}
+
+// SEND EMAIL (SIMPLE)
+function sendEmail($recipientEmail, $subject, $htmlContent) {
+    try {
+        Mail::html($htmlContent, function (Message $message) use ($recipientEmail, $subject) {
+            $message->to($recipientEmail);
+            $message->subject($subject);
+        });
+
+        return true; // Email sent successfully
+    } catch (\Exception $e) {
+        // You can log the error for debugging
+        // Log::error('Email sending failed: ' . $e->getMessage());
+        return false; // Email sending failed
+    }
 }

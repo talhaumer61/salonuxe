@@ -19,7 +19,7 @@
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12 col-12">
                 <div class="about-img  wow fade-up animated" style="visibility: visible; animation-name: fade-up;">
-                    <img src="images/about-1.png" alt="img" class="img-fluid">
+                    <img src="images/about-1.png" alt="img" class="img-fluid" style="border-radius: 10%;">
                 </div>
             </div>
         </div>

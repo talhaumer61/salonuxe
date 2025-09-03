@@ -34,4 +34,5 @@
 	<body>
 		<section class="body">
 
+        @include('client.sessionMsg')
         @include('client.navbar')

@@ -3,6 +3,7 @@
   --peach:#efcec9;
   --heading:#333333;
   --maroon:#911439;
+  --back:#FCF8DD;
 }
 h1 {
   font-size: 50px;
@@ -567,8 +568,8 @@ ul {
   top: 0;
   left: 0;
   right: 0;
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+  /* padding-top: 10px !important;
+  padding-bottom: 10px !important; */
   background-color: transparent;
   z-index: 111;
   -o-box-shadow: 0px 0px 25px -10px;
@@ -895,7 +896,7 @@ ul {
 
 /*----- main-header -----*/
 .main-header-wrapper {
-  background-color: #ffffff;
+  background-color: var(--back);
 }
 .main-header-wrapper .main-menu .navbar-brand {
   display: inline-block;
@@ -1634,9 +1635,9 @@ ul {
   color: #ffffff;
 }
 .service-wrapper .service-box-wrapper {
-  background-color: #efcec9;
-  padding: 65px;
-  margin: 50px 0 -115px 0;
+  background-color: var(--back);
+  padding: 35px;
+  /* margin: 50px 0 -115px 0; */
 }
 .service-wrapper .service-box-wrapper .service-box .service-img .service-img-hvr {
   position: relative;
@@ -1719,6 +1720,7 @@ ul {
 /*--------- about-section-start -----------*/
 .about-wrapper {
   padding: 60px 0 100px 0;
+  background-color: var(--back);
 }
 .about-wrapper .about-content {
   padding: 65px 0 0;
@@ -1841,7 +1843,7 @@ ul {
 /*--------- team-section-end -----------*/
 /*-------- gellary-section-start ---------*/
 .gellary-wrapper {
-  background-color: #efcec9;
+  background-color: var(--back);
   padding: 100px 0 200px 0;
   text-align: center;
 }
@@ -1851,7 +1853,7 @@ ul {
 
 .gellary-grid-wrapper {
   margin-top: -165px;
-  /* background-color: #efcec9; */
+  background-color: var(--back);
 }
 .gellary-grid-wrapper .column {
   flex: 30%;
@@ -1871,17 +1873,18 @@ ul {
 /*-------- gellary-section-end ---------*/
 /*-------- testimonial-section-start ----------*/
 .testimonial-wrapper {
-  padding: 180px 0;
+  padding: 60px 0;
+  background-color: var(--back);
 }
 .testimonial-wrapper .testimonial-content-wrapper {
-  background-image: url("../images/bg-testimonial.png");
+  /* background-image: url("../images/bg-testimonial.png"); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   width: 100%;
   float: left;
   text-align: center;
-  padding: 210px 0;
+  /* padding: 210px 0; */
 }
 .testimonial-wrapper .testimonial-content-wrapper .testimonial-head h3 {
   padding-top: 10px;
@@ -3203,7 +3206,7 @@ ul {
 }
 
 .ordinary-about-wrapper {
-  background-color: #efcec9;
+  background-color: var(--back);
   /* max-height: 690px; */
   padding-bottom: 40px;
 }
