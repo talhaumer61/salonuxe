@@ -52,5 +52,5 @@
 	</head>
 	<body>
 		<section class="body">
-
+		@include('admin.sessionMsg')
         @include('admin.navbar')

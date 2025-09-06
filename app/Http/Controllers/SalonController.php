@@ -148,129 +148,371 @@ class SalonController extends Controller
     }
 
     // Salon Services
-    public function services($action = "list", $href = null) {
-        // Check if the salon exists for the logged-in user
+    // public function services($action = "list", $href = null) {
+    //     $salon = DB::table('salons')
+    //         ->where('id_user', session('user')->id)
+    //         ->where('salon_status', 1)
+    //         ->where('is_deleted', 0)
+    //         ->first();
+
+    //     $serviceTypes = ServiceType::where('is_deleted', 0)
+    //         ->where('status', 1)
+    //         ->get();
+
+    //     $services = Service::where('is_deleted', 0)
+    //         ->where('id_salon', session('user')->salon_id)
+    //         ->whereIn('service_status', [1, 2])
+    //         ->paginate(10);
+
+    //     if ($action === "edit" && isset($href)) {
+    //         $service = Service::where('service_href', $href)
+    //             ->where('is_deleted', 0)
+    //             ->where('id_salon', $salon->salon_id)
+    //             ->firstOrFail();
+
+    //         return view('salon.services', compact('action', 'service', 'serviceTypes', 'href', 'salon'));
+    //     } 
+    //     elseif ($action === "add") {
+    //         $serviceTypes = DB::table('service_types')
+    //         ->where('is_deleted', 0)
+    //         ->where('status', 1)
+    //         ->get();
+
+    //         $services = DB::table('services')
+    //             ->where('is_deleted', 0)
+    //             ->where('id_salon', session('user')->salon_id)
+    //             ->whereIn('service_status', [1,2])
+    //             ->paginate(10);
+
+    //         // fetch attributes for all types and group by type id
+    //         $attributes = DB::table('attributes')
+    //             ->whereIn('service_type_id', $serviceTypes->pluck('id'))
+    //             ->get()
+    //             ->groupBy('service_type_id');
+
+    //         // attach options to each attribute
+    //         foreach ($attributes as $serviceTypeId => $group) {
+    //             foreach ($group as $attribute) {
+    //                 $attribute->options = DB::table('attribute_options')
+    //                     ->where('attribute_id', $attribute->id)
+    //                     ->get();
+    //             }
+    //         }
+
+    //         // now pass $attributes (grouped), $serviceTypes, $services, $salon to view
+    //         return view('salon.services', compact('action','serviceTypes','services','salon','attributes'));
+    //     }
+    //     else {
+    //         return view('salon.services', compact('action', 'services', 'salon'));
+    //     }
+    // }
+    public function services($action = "list", $href = null)
+    {
         $salon = DB::table('salons')
-                    ->where('id_user', session('user')->id)
-                    ->where('salon_status', 1)
-                    ->where('is_deleted', 0)
-                    ->first();
+            ->where('id_user', session('user')->id)
+            ->where('salon_status', 1)
+            ->where('is_deleted', 0)
+            ->first();
 
-        // Fetch service types (for listing)
-        $serviceTypes = ServiceType::where('is_deleted', 0)->where('status', 1)->get();
-
-        // Fetch services (always define this, even if not used in some cases)
-        $services = Service::where('is_deleted', 0)
-        ->where('id_salon', session('user')->salon_id)
-        ->where('service_status', [1,2])->paginate(10);
-
-        if ($action === "edit" && isset($href)) {
-            // Fetch the specific service
-            $service = Service::where('service_href', $href)
-                            ->where('is_deleted', 0)
-                            ->where('id_salon', $salon->id) // Ensure service belongs to the salon
-                            ->firstOrFail();
-
-            return view('salon.services', compact('action', 'service', 'serviceTypes', 'href', 'salon'));
-        } 
-        elseif ($action === "add") {
-            return view('salon.services', compact('action', 'serviceTypes', 'services', 'salon'));
-        } 
-        else {
-            // Default case: List services
-            return view('salon.services', compact('action', 'services', 'salon'));
+        // Check if salon exists and has a profile
+        if (!$salon) {
+            // Your existing logic for un-profiled salons
+            return view('salon.services', compact('salon'));
         }
+
+        // Fetch service types and attributes for both add and edit forms
+        $serviceTypes = DB::table('service_types')
+            ->where('is_deleted', 0)
+            ->where('status', 1)
+            ->get();
+        
+        $attributes = DB::table('attributes')
+            ->whereIn('service_type_id', $serviceTypes->pluck('id'))
+            ->get()
+            ->groupBy('service_type_id');
+
+        foreach ($attributes as $serviceTypeId => $group) {
+            foreach ($group as $attribute) {
+                $attribute->options = DB::table('attribute_options')
+                    ->where('attribute_id', $attribute->id)
+                    ->get();
+            }
+        }
+        
+        // Handle 'edit' action
+        if ($action === "edit" && isset($href)) {
+            $service = DB::table('services')
+                ->where('service_href', $href)
+                ->where('is_deleted', 0)
+                ->where('id_salon', $salon->salon_id) // Use the correct column name from your salon table
+                ->first();
+
+            if (!$service) {
+                return redirect()->view('salon.services')->with('error', 'Service not found or you do not have permission to edit it.');
+            }
+
+            // Fetch existing attribute values for the service
+            $serviceAttributes = DB::table('service_attributes')
+                ->where('service_id', $service->service_id)
+                ->get();
+            
+            // Re-organize service attributes for easy access in the view
+            $preselectedValues = [];
+            foreach ($serviceAttributes as $sa) {
+                if ($sa->option_id) {
+                    if (!isset($preselectedValues[$sa->attribute_id])) {
+                        $preselectedValues[$sa->attribute_id] = [];
+                    }
+                    $preselectedValues[$sa->attribute_id][] = $sa->option_id;
+                } else {
+                    $preselectedValues[$sa->attribute_id] = $sa->custom_value;
+                }
+            }
+
+            return view('salon.services', compact('action', 'service', 'serviceTypes', 'href', 'salon', 'attributes', 'preselectedValues'));
+        }
+        
+        // Handle 'add' action
+        if ($action === "add") {
+            return view('salon.services', compact('action', 'serviceTypes', 'salon', 'attributes'));
+        }
+        
+        // Handle 'list' action
+        $services = DB::table('services')
+            ->where('is_deleted', 0)
+            ->where('id_salon', $salon->salon_id)
+            ->whereIn('service_status', [1,2])
+            ->paginate(10);
+            
+        return view('salon.services', compact('action', 'services', 'salon'));
     }
-
-    
-
-    // Add new salon service
+    // Add salon service
     public function addService(Request $request)
     {
         $request->validate([
-            'service_name'   => 'required|string|max:255',
-            'id_type'        => 'nullable|integer',
-            'service_price'  => 'nullable|numeric',
-            'service_desc'   => 'nullable|string',
-            'service_photo'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'service_name'  => 'required|string|max:255',
+            'service_type_id'=> 'required|exists:service_types,id',
+            'service_price' => 'nullable|numeric',
+            'service_desc'  => 'nullable|string',
+            'service_photo' => 'nullable|image|max:2048',
+            'attributes'    => 'nullable|array', // dynamic attributes
         ]);
 
-        // Handle Service Photo Upload
+        // handle photo...
         $photoPath = null;
         if ($request->hasFile('service_photo')) {
             $photo = $request->file('service_photo');
-            $photoName = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
-            $photoPath = 'uploads/salons/services/' . $photoName;
-
-            // Move to public directory
+            $photoName = time().'_'.Str::random(6).'.'.$photo->getClientOriginalExtension();
             $photo->move(public_path('uploads/salons/services'), $photoName);
+            $photoPath = 'uploads/salons/services/'.$photoName;
         }
 
-        // Create new service
-        Service::create([
+        // insert service
+        $serviceId = DB::table('services')->insertGetId([
             'service_name'   => $request->service_name,
             'service_href'   => Str::random(16),
-            'id_type'        => $request->id_type,
+            'id_type'        => $request->service_type_id,
             'service_price'  => $request->service_price,
             'service_desc'   => $request->service_desc,
             'service_status' => 2,
             'service_photo'  => $photoPath,
-            'id_salon'       => session('user')->salon_id ,
-            'id_added'       => session('user')->id ,
+            'id_salon'       => session('user')->salon_id,
+            'id_added'       => session('user')->id,
             'date_added'     => now(),
         ]);
 
-        // Redirect to services list page with success message
+        // Save attributes
+        // expected structure:
+        // attributes[ATTRIBUTE_ID] = single value OR array (for multiple checkbox)
+        $attrs = $request->input('attributes', []);
+        $insertData = [];
+
+        foreach ($attrs as $attributeId => $val) {
+            // if val is array => multiple selected options (checkboxes)
+            if (is_array($val)) {
+                foreach ($val as $optionId) {
+                    $insertData[] = [
+                        'service_id'   => $serviceId,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => $optionId,
+                        'custom_value' => null,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                }
+            } else {
+                // single value: could be option id (radio) OR text/number input
+                // Decide: check if attribute has options in DB. If it has options, treat as option_id, else treat as custom_value.
+                $hasOption = DB::table('attribute_options')
+                    ->where('attribute_id', $attributeId)
+                    ->where('id', $val)
+                    ->exists();
+
+                if ($hasOption) {
+                    $insertData[] = [
+                        'service_id'   => $serviceId,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => $val,
+                        'custom_value' => null,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                } else {
+                    // text/number -> save custom value
+                    $insertData[] = [
+                        'service_id'   => $serviceId,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => null,
+                        'custom_value' => $val,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                }
+            }
+        }
+
+        if (!empty($insertData)) {
+            DB::table('service_attributes')->insert($insertData);
+        }
+
         return redirect('/services')->with('success', 'Service added successfully!');
     }
 
     // Edit salon service
-    public function editService(Request $request, $href)
-    {
-        // Find the service by href
-        $service = Service::where('service_href', $href)
-                            ->where('id_salon', session('user')->salon_id)
-                            ->firstOrFail();
-
-        // Validate request data
+    public function editService(Request $request, $id){
         $request->validate([
-            'service_name'   => 'required|string|max:255',
-            'id_type'        => 'required|exists:service_types,id',
-            'service_price'  => 'required|numeric|min:0',
-            'service_desc'   => 'nullable|string',
-            'service_photo'  => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+            'service_name'  => 'required|string|max:255',
+            'service_type_id'=> 'required|exists:service_types,id',
+            'service_price' => 'nullable|numeric',
+            'service_desc'  => 'nullable|string',
+            'service_photo' => 'nullable|image|max:2048',
+            'attributes'    => 'nullable|array',
         ]);
-
-        // Update service details
-        $service->service_name   = $request->service_name;
-        $service->id_type        = $request->id_type;
-        $service->service_price  = $request->service_price;
-        $service->service_desc   = $request->service_desc;
-
-        // Handle image upload
-        if ($request->hasFile('service_photo')) {
-            // Delete old photo if exists
-            if ($service->service_photo && file_exists(public_path($service->service_photo))) {
-                unlink(public_path($service->service_photo));
-            }
-
-            // Upload new photo
-            $photo = $request->file('service_photo');
-            $photoName = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
-            $photoPath = 'uploads/salons/services/' . $photoName;
-
-            // Move to public directory
-            $photo->move(public_path('uploads/salons/services'), $photoName);
-
-            // Update the service photo path
-            $service->service_photo = $photoPath;
+        
+        $service = DB::table('services')->where('service_id', $id)->first();
+        if (!$service) {
+            return redirect()->back()->with('error', 'Service not found.');
         }
 
-        // Save the updated service
-        $service->save();
+        $photoPath = $service->service_photo;
+        if ($request->hasFile('service_photo')) {
+            if ($photoPath && file_exists(public_path($photoPath))) {
+                unlink(public_path($photoPath));
+            }
+            $photo = $request->file('service_photo');
+            $photoName = time() . '_' . Str::random(6) . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('uploads/salons/services'), $photoName);
+            $photoPath = 'uploads/salons/services/' . $photoName;
+        }
 
-        return redirect('/services')->with('success', 'Service updated successfully!');
+        DB::table('services')->where('service_id', $id)->update([
+            'service_name'   => $request->service_name,
+            'id_type'        => $request->service_type_id,
+            'service_price'  => $request->service_price,
+            'service_desc'   => $request->service_desc,
+            'service_photo'  => $photoPath,
+            'updated_at'     => now(),
+        ]);
+        
+        // Delete old attributes and save new ones
+        DB::table('service_attributes')->where('service_id', $id)->delete();
+        
+        $attrs = $request->input('attributes', []);
+        $insertData = [];
+
+        foreach ($attrs as $attributeId => $val) {
+            if (is_array($val)) {
+                foreach ($val as $optionId) {
+                    $insertData[] = [
+                        'service_id'   => $id,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => $optionId,
+                        'custom_value' => null,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                }
+            } else {
+                $hasOption = DB::table('attribute_options')
+                    ->where('attribute_id', $attributeId)
+                    ->where('id', $val)
+                    ->exists();
+
+                if ($hasOption) {
+                    $insertData[] = [
+                        'service_id'   => $id,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => $val,
+                        'custom_value' => null,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                } else {
+                    $insertData[] = [
+                        'service_id'   => $id,
+                        'attribute_id' => $attributeId,
+                        'option_id'    => null,
+                        'custom_value' => $val,
+                        'created_at'   => now(),
+                        'updated_at'   => now(),
+                    ];
+                }
+            }
+        }
+        
+        if (!empty($insertData)) {
+            DB::table('service_attributes')->insert($insertData);
+        }
+
+        session()->flash('success', 'Service updated successfully!');
+        return redirect()->view('salon.services');
     }
+    // public function editService(Request $request, $href)
+    // {
+    //     // Find the service by href
+    //     $service = Service::where('service_href', $href)
+    //                         ->where('id_salon', session('user')->salon_id)
+    //                         ->firstOrFail();
+
+    //     // Validate request data
+    //     $request->validate([
+    //         'service_name'   => 'required|string|max:255',
+    //         'id_type'        => 'required|exists:service_types,id',
+    //         'service_price'  => 'required|numeric|min:0',
+    //         'service_desc'   => 'nullable|string',
+    //         'service_photo'  => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
+    //     ]);
+
+    //     // Update service details
+    //     $service->service_name   = $request->service_name;
+    //     $service->id_type        = $request->id_type;
+    //     $service->service_price  = $request->service_price;
+    //     $service->service_desc   = $request->service_desc;
+
+    //     // Handle image upload
+    //     if ($request->hasFile('service_photo')) {
+    //         // Delete old photo if exists
+    //         if ($service->service_photo && file_exists(public_path($service->service_photo))) {
+    //             unlink(public_path($service->service_photo));
+    //         }
+
+    //         // Upload new photo
+    //         $photo = $request->file('service_photo');
+    //         $photoName = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
+    //         $photoPath = 'uploads/salons/services/' . $photoName;
+
+    //         // Move to public directory
+    //         $photo->move(public_path('uploads/salons/services'), $photoName);
+
+    //         // Update the service photo path
+    //         $service->service_photo = $photoPath;
+    //     }
+
+    //     // Save the updated service
+    //     $service->save();
+
+    //     return redirect('/services')->with('success', 'Service updated successfully!');
+    // }
 
     // Bookings
     public function bookings(){

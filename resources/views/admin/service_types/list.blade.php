@@ -88,7 +88,7 @@
                                                 <td>{!! get_status($serviceType->status) !!}</td>
                                                 <td class="text-center">
                                                     <a href="{{ route('service_types', ['action' => 'edit', 'href' => $serviceType->href]) }}" class="btn btn-sm btn-warning"> <i class="fa-solid fa-pen-to-square"></i></a>
-                                                    <a href="#" onclick="confirmDelete('service_types', {{ $serviceType->id }}, 'id');" class="btn btn-sm btn-danger delete-btn"><i class="fa-solid fa-trash"></i></a>
+                                                    <a href="#" onclick="confirmDelete('service_types', '{{ $serviceType->id }}', 'id');" class="btn btn-sm btn-danger delete-btn"><i class="fa-solid fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach

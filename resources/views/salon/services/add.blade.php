@@ -33,27 +33,78 @@
                                         <input type="text" class="form-control form-control-modern" name="service_name" value="" required="">
                                     </div>
                                 </div>
-                                {{-- <div class="form-group row align-items-center pb-3">
-                                    <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Status</label>
+                                <div class="form-group row align-items-center mb-3">
+                                    <label for="serviceType" class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Service Type</label>
                                     <div class="col-lg-7 col-xl-10">
-                                        <select class="form-control form-control-modern" name="service_status">
-                                            <option value="in-stock" selected="">Choose One...</option>
-                                            <option value="1">Active</option>
-                                            <option value="2">Inactive</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                <div class="form-group row align-items-center pb-3">
-                                    <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Type</label>
-                                    <div class="col-lg-7 col-xl-10">
-                                        <select class="form-control form-control-modern" name="id_type">
-                                            <option value="" selected>Choose One...</option>
-                                            @foreach ($serviceTypes as $serviceType)
-                                                <option value="{{ $serviceType->id }}">{{ $serviceType->name }}</option>
+                                        <select name="service_type_id" id="serviceType" class="form-control form-control-modern" required>
+                                            <option value="">-- Select Service Type --</option>
+                                            @foreach($serviceTypes as $type)
+                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
+
+                                <!-- Attributes grouped by service type -->
+                                @foreach($attributes as $serviceTypeId => $attrGroup)
+                                    <div id="type-{{ $serviceTypeId }}" class="service-attributes" style="display:none;">
+                                        {{-- <h6 class="mb-3">{{ $serviceTypes->firstWhere('id', $serviceTypeId)->name ?? 'Attributes' }}</h6> --}}
+
+                                        @foreach($attrGroup as $attr)
+                                            <div class="form-group row align-items-center mb-3">
+                                                <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">{{ $attr->label }}</label>
+                                                <div class="col-lg-7 col-xl-10">
+                                                    @php
+                                                        $singleTypes = ['select','single','radio'];
+                                                        $multiTypes  = ['multiselect','multiple','checkbox'];
+                                                    @endphp
+
+                                                    @if(in_array($attr->input_type, $singleTypes))
+                                                        @foreach($attr->options as $opt)
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" 
+                                                                    type="radio" 
+                                                                    name="attributes[{{ $attr->id }}]" 
+                                                                    id="attr-{{ $attr->id }}-opt-{{ $opt->id }}" 
+                                                                    value="{{ $opt->id }}" 
+                                                                    {{ $attr->is_required ? 'required' : '' }}>
+                                                                <label class="form-check-label" for="attr-{{ $attr->id }}-opt-{{ $opt->id }}">{{ $opt->value }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    @elseif(in_array($attr->input_type, $multiTypes))
+                                                        @foreach($attr->options as $opt)
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" 
+                                                                    type="checkbox" 
+                                                                    name="attributes[{{ $attr->id }}][]" 
+                                                                    id="attr-{{ $attr->id }}-opt-{{ $opt->id }}" 
+                                                                    value="{{ $opt->id }}">
+                                                                <label class="form-check-label" for="attr-{{ $attr->id }}-opt-{{ $opt->id }}">{{ $opt->value }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    @elseif(in_array($attr->input_type, ['text','number']))
+                                                        <input type="{{ $attr->input_type }}" 
+                                                            class="form-control form-control-modern" 
+                                                            name="attributes[{{ $attr->id }}]" 
+                                                            {{ $attr->is_required ? 'required' : '' }}>
+                                                    @else
+                                                        @foreach($attr->options as $opt)
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" 
+                                                                    type="checkbox" 
+                                                                    name="attributes[{{ $attr->id }}][]" 
+                                                                    value="{{ $opt->id }}">
+                                                                <label class="form-check-label">{{ $opt->value }}</label>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+
+                                {{-- <div id="attributes-container"></div> --}}
                                 <div class="form-group row align-items-center mb-3">
                                     <label class="col-lg-5 col-xl-2 control-label text-lg-end mb-0">Price</label>
                                     <div class="col-lg-7 col-xl-10">
@@ -126,3 +177,28 @@
         </div>
     @endif
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var serviceType = document.getElementById('serviceType');
+    var groups = document.querySelectorAll('.service-attributes');
+
+    function hideAllGroups(){
+        groups.forEach(function(g){ g.style.display = 'none'; });
+    }
+
+    serviceType.addEventListener('change', function () {
+        hideAllGroups();
+        var v = this.value;
+        if (!v) return;
+        var el = document.getElementById('type-' + v);
+        if (el) el.style.display = 'block';
+    });
+
+    // Optional: on page load, show selected (if editing)
+    if (serviceType.value) {
+        var ev = new Event('change');
+        serviceType.dispatchEvent(ev);
+    }
+});
+</script>

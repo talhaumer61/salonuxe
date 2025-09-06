@@ -53,6 +53,11 @@
                                         Types
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link" href="/service-type-attributes">
+                                        Attributes
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li class="dropdown">

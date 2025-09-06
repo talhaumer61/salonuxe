@@ -91,8 +91,8 @@
                                                     <td>{{($service->service_price) }}</td>
                                                     <td>{!! get_service_status($service->service_status) !!}</td>
                                                     <td class="text-center">
-                                                        <a href="{{ route('services', ['action' => 'edit', 'href' => $service->service_href]) }}" class="btn btn-sm btn-warning"> <i class="fa-solid fa-pen-to-square"></i></a>
-                                                        <a href="#" onclick="confirmDelete('{{ env('SERVICES') }}', {{ $service->service_id }}, 'service_id');" class="btn btn-sm btn-danger delete-btn"><i class="fa-solid fa-trash"></i></a>
+                                                        <a href="{{ route('salon.services', ['action' => 'edit', 'href' => $service->service_href]) }}" class="btn btn-sm btn-warning"> <i class="fa-solid fa-pen-to-square"></i></a>
+                                                        <a href="#" onclick="confirmDelete('services', {{ $service->service_id }}, 'service_id');" class="btn btn-sm btn-danger delete-btn"><i class="fa-solid fa-trash"></i></a>
                                                     </td>
                                                 </tr>
                                             @endforeach

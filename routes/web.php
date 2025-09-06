@@ -3,8 +3,10 @@
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AttributesController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FaqsController;
+use App\Http\Controllers\FindServiceController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SiteController;
@@ -25,6 +27,8 @@ Route::get('/salon/{href}', [SiteController::class, 'salonDetail']);
 
 Route::get('/about', [SiteController::class, 'about']);
 Route::get('/contact', [SiteController::class, 'contact']);
+Route::get('/find-a-service', [FindServiceController::class, 'showSearchForm']);
+Route::get('/find-service-results', [FindServiceController::class, 'searchServices'])->name('client.services.search');
 
 // Routes Accessible Only to Guests (Prevent Logged-in Users from Accessing Login/Signup)
 Route::middleware([RedirectAuthenticatedUser::class])->group(function () {
@@ -70,6 +74,14 @@ Route::middleware([AdminVerification::class])->group(function () {
     Route::post('/service-types/add', [ServicesController::class, 'add_service_type'])->name('service_types.add');
     Route::put('/service-types/update/{href}', [ServicesController::class, 'edit_service_type'])->name('service_types.update');
 
+    // SERVICE TYPE ATTRIBUTES
+    // List / Add / Edit (GET only)
+    Route::get('/service-type-attributes/{action?}/{href?}', [AttributesController::class, 'index'])->name('service_type_attributes');
+    Route::post('/service-type-attributes/store', [AttributesController::class, 'store'])->name('service_attributes.store');
+    Route::put('//service-type-attributes/update/{href}', [AttributesController::class, 'update'])->name('service_attributes.update');
+
+
+
     // FAQS
     Route::get('/faqs/{action?}/{id?}', [FaqsController::class, 'faqs'])->name('faqs.index');
     Route::post('/faqs/store', [FaqsController::class, 'store'])->name('faqs.store');
@@ -102,6 +114,9 @@ Route::middleware([CheckAuthentication::class])->group(function () {
 
     // Routes Accessible Only to Salons (login_type = 3)
     Route::middleware([SalonVerification::class])->group(function () {
+
+        Route::get('/get-attributes/{id}', [SalonController::class, 'getAttributes']);
+
         Route::get('/salon-dashboard', [SalonController::class, 'index'])->name('salonDashboard');
         Route::get('/profile', [SalonController::class, 'profile']);
 
@@ -109,9 +124,9 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::post('/salon/add', [SalonController::class, 'addSalon'])->name('add.salon'); // Add new salon
         Route::put('/salon/update', [SalonController::class, 'updateSalon'])->name('update.salon'); // Update existing salon
 
-        Route::get('/services/{action?}/{href?}', [SalonController::class, 'services'])->name('services');
+        Route::get('/services/{action?}/{href?}', [SalonController::class, 'services'])->name('salon.services');
         Route::post('/services/add-service', [SalonController::class, 'addService'])->name('salon.services.add');
-        Route::put('/services/update-service/{href}', [SalonController::class, 'editService'])->name('salon.services.update');
+        Route::put('/services/update-service/{id}', [SalonController::class, 'editService'])->name('salon.services.update');
 
         Route::get('/bookings', [SalonController::class, 'bookings']);
         Route::post('/appointments/update-status/{href}', [SalonController::class, 'updateStatus']);
