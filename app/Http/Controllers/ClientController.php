@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class ClientController extends Controller
 {
     public function index(){
-        // Email Logic
+        // // Email Logic
         // $email = $request->input('email');
         // $name = $request->input('name');
         

@@ -379,7 +379,8 @@ class SalonController extends Controller
     }
 
     // Edit salon service
-    public function editService(Request $request, $id){
+    public function editService(Request $request, $id)
+    {
         $request->validate([
             'service_name'  => 'required|string|max:255',
             'service_type_id'=> 'required|exists:service_types,id',

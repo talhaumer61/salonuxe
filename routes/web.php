@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\FindServiceController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\JobsController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SiteController;
 use App\Http\Middleware\AdminVerification;
@@ -110,6 +111,9 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         // DELETE APPOINTMENT
         Route::delete('/appointments/delete/{href}', [ClientController::class, 'deleteAppointment'])->name('appointments.delete');
 
+        Route::post('/apply-job', [JobsController::class, 'applyJob'])->name('apply.job');
+
+
     });
 
     // Routes Accessible Only to Salons (login_type = 3)
@@ -132,6 +136,11 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::post('/appointments/update-status/{href}', [SalonController::class, 'updateStatus']);
 
 
+        Route::get('/jobs/{action?}/{href?}', [JobsController::class, 'jobs'])->name('salon.jobs');
+        Route::post('/salon-jobs/add', [JobsController::class, 'addJob'])->name('salon.jobs.add');
+        Route::put('/jobs/update/{id}', [JobsController::class, 'editJob'])->name('salon.jobs.update');
+
+        Route::post('/applications/respond', [JobsController::class, 'respond'])->name('applications.respond');
 
         Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');
 

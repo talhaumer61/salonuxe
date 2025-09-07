@@ -37,4 +37,5 @@
 	<body>
 		<section class="body">
 
+        @include('salon.sessionMsg')
         @include('salon.navbar')

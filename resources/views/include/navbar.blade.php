@@ -1,3 +1,4 @@
+@include('include.sessionMsg')
 @include('include.header')
 <div class="main-header-wrapper float-left">
     <div class="main-menu float-left">

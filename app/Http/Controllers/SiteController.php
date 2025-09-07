@@ -23,26 +23,78 @@ class SiteController extends Controller
         return view('home', compact('services'));
     }
 
+    // public function salons(Request $request)
+    // {
+    //     $query = DB::table('salons')
+    //         ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
+    //         ->select('salons.*', 'cities.name as city_name')
+    //         ->where('salons.is_deleted', 0)
+    //         ->where('salons.salon_status', 1);
+
+    //     if ($request->filled('search')) {
+    //         $query->where('salons.salon_name', 'like', '%' . $request->search . '%');
+    //     }
+
+    //     if ($request->filled('city')) {
+    //         $query->where('cities.name', $request->city);
+    //     }
+
+    //     $salons = $query->orderByDesc('salons.date_added')->get();
+    //     $cities = DB::table('cities')->pluck('name');
+
+    //     // 👇 Use this for AJAX like in services module
+    //     if ($request->ajax()) {
+    //         $html = view('salons', compact('salons', 'cities'))->render();
+    //         return response()->json(['html' => $html]);
+    //     }
+
+    //     return view('salons', compact('salons', 'cities'));
+    // }
     public function salons(Request $request)
     {
         $query = DB::table('salons')
             ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
-            ->select('salons.*', 'cities.name as city_name')
+            ->leftJoin('salon_jobs', function($join) {
+                $join->on('salons.salon_id', '=', 'salon_jobs.id_salon')
+                    ->where('salon_jobs.job_status', 1); // only open jobs
+            })
+            ->select(
+                'salons.salon_id',
+                'salons.salon_name',
+                'salons.salon_logo',
+                'salons.salon_href',
+                'salons.date_added',
+                'cities.name as city_name',
+                DB::raw('COUNT(salon_jobs.job_id) as open_jobs_count')
+            )
             ->where('salons.is_deleted', 0)
-            ->where('salons.salon_status', 1);
+            ->where('salons.salon_status', 1)
+            ->groupBy(
+                'salons.salon_id',
+                'salons.salon_name',
+                'salons.salon_logo',
+                'salons.salon_href',
+                'salons.date_added',
+                'cities.name'
+            );
 
+        // 🔍 Search filter
         if ($request->filled('search')) {
             $query->where('salons.salon_name', 'like', '%' . $request->search . '%');
         }
 
+        // 🏙 City filter
         if ($request->filled('city')) {
             $query->where('cities.name', $request->city);
         }
 
+        // 📋 Get salons
         $salons = $query->orderByDesc('salons.date_added')->get();
+
+        // 🏙 Get all cities for filter dropdown
         $cities = DB::table('cities')->pluck('name');
 
-        // 👇 Use this for AJAX like in services module
+        // ⚡ AJAX request (filters/search)
         if ($request->ajax()) {
             $html = view('salons', compact('salons', 'cities'))->render();
             return response()->json(['html' => $html]);
@@ -51,14 +103,13 @@ class SiteController extends Controller
         return view('salons', compact('salons', 'cities'));
     }
 
-
     public function salonDetail($href)
     {
         // Get salon info
         $salon = DB::table('salons')
             ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
             ->where('salon_href', $href)
-            ->where('salons.is_deleted',0)
+            ->where('salons.is_deleted', 0)
             ->select(
                 'salons.*',
                 'cities.name as city_name'
@@ -85,8 +136,16 @@ class SiteController extends Controller
             ->get()
             ->groupBy('id_type');
 
-        return view('salons',compact('salon', 'services', 'href'));
+        // Get salon jobs
+        $jobs = DB::table('salon_jobs')
+            ->where('id_salon', $salon->salon_id)
+            ->where('is_deleted', 0)
+            ->orderBy('date_added', 'desc')
+            ->get();
+
+        return view('salons', compact('salon', 'services', 'jobs', 'href'));
     }
+
 
 
     public function available_services(Request $request, $href = null)

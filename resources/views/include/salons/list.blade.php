@@ -32,16 +32,33 @@
         <div class="row justify-content-center">
             @forelse($salons as $salon)
                 <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                    <div class="news-box my-3 news-box-next wow fade-box animated shadow-sm" style="background: #fff; border-radius: 12px; overflow: hidden; transition: all 0.3s ease;">
-                        <img src="{{ asset($salon->salon_logo) }}" alt="{{ $salon->salon_name }}" style="height: 250px; object-fit: cover; width: 100%; border-bottom: 1px solid #eee;">
-                        <div class="news-content-wrapper p-3 text-center">
-                            <h5 class="mb-2">
-                                <a href="{{ url('salon/' . $salon->salon_href) }}" class="text-dark text-decoration-none">{{ $salon->salon_name }}</a>
-                            </h5>
-                            <a href="{{ url('salon/' . $salon->salon_href) }}" class="read-btn btn btn-outline-primary btn-sm">View Services</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="news-box my-3 news-box-next wow fade-box animated shadow-sm" 
+         style="background: #fff; border-radius: 12px; overflow: hidden; position: relative; transition: all 0.3s ease;">
+
+        <!-- Hiring badge -->
+        @if($salon->open_jobs_count > 0)
+            <span class="badge bg-success position-absolute top-0 start-0 m-2 px-3 py-2" 
+                  style="font-size: 0.9rem; border-radius: 8px;">
+                Hiring
+            </span>
+        @endif
+
+        <img src="{{ asset($salon->salon_logo) }}" alt="{{ $salon->salon_name }}" 
+             style="height: 250px; object-fit: cover; width: 100%; border-bottom: 1px solid #eee;">
+
+        <div class="news-content-wrapper p-3 text-center">
+            <h5 class="mb-2">
+                <a href="{{ url('salon/' . $salon->salon_href) }}" class="text-dark text-decoration-none">
+                    {{ $salon->salon_name }}
+                </a>
+            </h5>
+            <a href="{{ url('salon/' . $salon->salon_href) }}" class="read-btn btn btn-outline-primary btn-sm">
+                View Services
+            </a>
+        </div>
+    </div>
+</div>
+
 
             @empty
                 <div class="col-12 text-center my-5">

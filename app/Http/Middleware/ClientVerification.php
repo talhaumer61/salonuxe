@@ -18,7 +18,8 @@ class ClientVerification
         $user = session('user');
         // Check if user is logged in and has login_type 2
         if (!$user || $user->login_type != 2) {
-            return redirect('/')->withErrors(['message' => 'Unauthorized access.']);
+            sessionMsg('Error', 'Unauthorized access. Please log in as a client.', 'danger');
+            return redirect('/login');
         }
 
         return $next($request);

@@ -43,6 +43,11 @@
                                 Salon Profile
                             </a>    
                         </li>
+                        <li class="">
+                            <a class="nav-link" href="/jobs">
+                                Jobs
+                            </a>    
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="nav-link dropdown-toggle">More<i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
