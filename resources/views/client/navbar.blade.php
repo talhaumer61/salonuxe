@@ -33,6 +33,29 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="">
+                            @php
+                                $userId = session('user')->id ?? null;
+                                $pendingCount = 0;
+
+                                if ($userId) {
+                                    $pendingCount = DB::table('salon_queries')
+                                            ->where('user_id', $userId)
+                                            ->where('is_replied', true)
+                                            ->count();
+                                }
+                            @endphp
+
+                            <a class="nav-link position-relative" href="/my-queries">
+                                Messages
+                                @if($pendingCount > 0)
+                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                                        {{ $pendingCount }}
+                                    </span>
+                                @endif
+                            </a>
+                        </li>
+
                         <li class="dropdown">
                             <a href="#" class="nav-link dropdown-toggle">More<i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">

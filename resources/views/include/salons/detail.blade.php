@@ -13,6 +13,60 @@
             <p><i class="fas fa-envelope"></i> {{ $salon->salon_email }}</p>
         </div>
     </div>
+    <div class="d-flex justify-content-center mb-4">
+        <!-- Ask Question Button -->
+        <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#salonThreadModal">
+            <i class="fa-regular fa-comment"></i> Ask a Question
+        </button>
+    </div>
+    <!-- Thread Modal -->
+    <div class="modal fade" id="salonThreadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Conversation with {{ $salon->salon_name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" style="max-height:400px; overflow-y:auto;">
+                @if($query)
+                    @foreach($messages as $msg)
+                        <div class="mb-3 p-2 rounded 
+                            {{ $msg->sender_type == 'user' ? 'bg-light text-end' : 'bg-success text-white' }}">
+                            <small><strong>{{ ucfirst($msg->sender_type) }}</strong>:</small><br>
+                            {{ $msg->message }}<br>
+                            <small class="text-muted">{{ \Carbon\Carbon::parse($msg->created_at)->diffForHumans() }}</small>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-muted">No conversation yet. Start by asking a question below.</p>
+                @endif
+            </div>
+
+            <div class="modal-footer">
+                @if($query)
+                    <!-- Continue thread -->
+                    <form action="{{ route('queries.message', $query->id) }}" method="POST" class="w-100 d-flex">
+                    @csrf
+                    <input type="text" name="message" class="form-control me-2" placeholder="Type your message..." required>
+                    <button class="btn btn-primary">Send</button>
+                    </form>
+                @else
+                    <!-- Start new query -->
+                    <form action="{{ route('queries.start') }}" method="POST" class="w-100">
+                    @csrf
+                    <input type="hidden" name="salon_id" value="{{ $salon->salon_id }}">
+                    <input type="text" name="subject" class="form-control mb-2" placeholder="Subject (optional)">
+                    <textarea name="message" class="form-control mb-2" placeholder="Type your message..." required></textarea>
+                    <button class="btn btn-primary">Start Conversation</button>
+                    </form>
+                @endif
+            </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Services -->
     <div class="container">

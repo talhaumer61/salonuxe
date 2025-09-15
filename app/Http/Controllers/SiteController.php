@@ -105,6 +105,8 @@ class SiteController extends Controller
 
     public function salonDetail($href)
     {
+        $userId = session('user')->id ?? null;
+
         // Get salon info
         $salon = DB::table('salons')
             ->leftJoin('cities', 'salons.id_city', '=', 'cities.id')
@@ -143,8 +145,26 @@ class SiteController extends Controller
             ->orderBy('date_added', 'desc')
             ->get();
 
-        return view('salons', compact('salon', 'services', 'jobs', 'href'));
+        // 🔹 Query/Thread data (if logged in)
+        $query = null;
+        $messages = [];
+        if ($userId) {
+            $query = DB::table('salon_queries')
+                ->where('user_id', $userId)
+                ->where('salon_id', $salon->salon_id)
+                ->first();
+
+            if ($query) {
+                $messages = DB::table('salon_query_messages')
+                    ->where('query_id', $query->id)
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+            }
+        }
+
+        return view('salons', compact('salon', 'services', 'jobs', 'href', 'query', 'messages'));
     }
+
 
 
 

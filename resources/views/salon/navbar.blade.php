@@ -12,7 +12,7 @@
                 <nav>
                     <ul class="nav nav-pills" id="mainNav">
                         <li class="">
-                            <a class="nav-link" href="/client-dashboard">
+                            <a class="nav-link" href="/salon-dashboard">
                                 Dashboard
                             </a>    
                         </li>
@@ -37,6 +37,27 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="">
+                            @php
+                                $ownerId = session('user')->id ?? null;
+                                $pendingCount = 0;
+                                if ($ownerId) {
+                                    $salon = DB::table('salons')->where('id_user', $ownerId)->first();
+                                    if ($salon) {
+                                        $pendingCount = DB::table('salon_queries')
+                                            ->where('salon_id', $salon->salon_id)
+                                            ->where('is_replied', false)
+                                            ->count();
+                                    }
+                                }
+                            @endphp
+                            <a class="nav-link position-relative" href="/customer-messages">
+                                Messages
+                                @if($pendingCount > 0)
+                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">{{ $pendingCount }}</span>
+                                @endif
+                            </a>    
                         </li>
                         <li class="">
                             <a class="nav-link" href="/salon-profile">

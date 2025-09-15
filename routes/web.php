@@ -9,7 +9,9 @@ use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\FindServiceController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\JobsController;
+use App\Http\Controllers\QueryController;
 use App\Http\Controllers\SalonController;
+use App\Http\Controllers\SalonQueryController;
 use App\Http\Controllers\SiteController;
 use App\Http\Middleware\AdminVerification;
 use App\Http\Middleware\RedirectAuthenticatedUser;
@@ -113,6 +115,14 @@ Route::middleware([CheckAuthentication::class])->group(function () {
 
         Route::post('/apply-job', [JobsController::class, 'applyJob'])->name('apply.job');
 
+        // Customer (user) routes
+        Route::get('/my-queries', [QueryController::class, 'myQueries'])->name('queries.my');
+        Route::post('/queries/start', [QueryController::class, 'store'])->name('queries.start');          // start new query
+        Route::post('/queries/{id}/message', [QueryController::class, 'sendMessage'])->name('queries.message'); // add message to existing
+        // Show thread modal (for salon detail)
+    Route::get('/salon/{id}/thread', [QueryController::class, 'salonThread'])->name('queries.salonThread');
+
+
 
     });
 
@@ -141,6 +151,10 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::put('/jobs/update/{id}', [JobsController::class, 'editJob'])->name('salon.jobs.update');
 
         Route::post('/applications/respond', [JobsController::class, 'respond'])->name('applications.respond');
+
+        // Salon owner routes
+        Route::get('/customer-messages', [SalonQueryController::class, 'ownerIndex'])->name('owner.queries');
+        Route::post('/owner/queries/{id}/reply', [SalonQueryController::class, 'reply'])->name('owner.queries.reply');
 
         Route::post('/delete-record', [DatabaseController::class, 'deleteRecord'])->name('delete.record');
 
