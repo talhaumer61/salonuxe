@@ -31,7 +31,9 @@
                                 <th>Customer Name</th>
                                 <th>Date</th>
                                 <th>Service</th>
-                                <th>Total</th>
+                                <th>Price</th>
+                                <th>Advance Amount</th>
+                                <th>Paid</th>
                                 <th>Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -44,8 +46,27 @@
                                 <td>{{ \Carbon\Carbon::parse($order->appointment_date)->format('M d, Y') }}</td>
                                 <td>{{ $order->service_name }}</td>
                                 <td>Rs. {{ number_format($order->service_price, 2) }}</td>
+                                @if ($order->status == 1)
+                                    <td>Rs. {{ number_format($order->advance_amount, 2) }}</td>
+                                    <td>
+                                        @if ($order->advance_paid)
+                                            <span class="badge bg-success">Yes</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">No</span>
+                                        @endif
+                                    </td>
+                                @else
+                                    <td>Rs. 0.00</td>
+                                    <td><span class="text-muted">N/A</span></td>
+                                @endif
                                 <td id="status-{{ $order->href }}">{!! get_booking_status($order->status) !!}</td>
                                 <td class="text-center">
+                                    @if(!$order->salon_completed && session('user')->login_type == 3)
+                                            <form action="{{ route('appointments.markCompleted', $order->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success">Mark as Completed</button>
+                                            </form>
+                                        @endif
                                     @if ($order->status == 2)
                                         <button class="btn btn-sm btn-success" onclick="updateStatus('{{ $order->href }}', 1)"><i class="fa-regular fa-circle-check"></i> Accept</button>
                                         <button class="btn btn-sm btn-danger" onclick="updateStatus('{{ $order->href }}', 3)"><i class="fa-regular fa-circle-xmark"></i> Reject</button>

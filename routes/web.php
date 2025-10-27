@@ -9,10 +9,12 @@ use App\Http\Controllers\FaqsController;
 use App\Http\Controllers\FindServiceController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\JobsController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QueryController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SalonQueryController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Middleware\AdminVerification;
 use App\Http\Middleware\RedirectAuthenticatedUser;
 use App\Http\Middleware\CheckAuthentication;
@@ -100,16 +102,28 @@ Route::middleware([CheckAuthentication::class])->group(function () {
 
     Route::post('/change-password', [SiteController::class, 'changePassword'])->name('change.password');
     Route::post('/update-profile', [SiteController::class, 'updateProfile'])->name('profile.update');
+
+    Route::post('/appointments/{id}/mark-completed', [PaymentController::class, 'markCompleted'])->name('appointments.markCompleted');
+
     
     // Routes Accessible Only to Clients (login_type = 2)
     Route::middleware([ClientVerification::class])->group(function () {
         Route::get('/client-dashboard', [ClientController::class, 'index'])->name('clientDashboard');
         Route::get('/user-profile', [ClientController::class, 'profile']);
-        Route::get('/my-bookings', [ClientController::class, 'bookings']);
+        Route::get('/my-bookings', [ClientController::class, 'bookings'])->name('client.bookings');
 
         // BOOK APPOINTMENT
         Route::get('/book-appointment/{href}', [ClientController::class, 'book_appointment']);
         Route::post('/make-appointment', [ClientController::class, 'makeAppointment'])->name('make.appointment');
+
+            // PAYMENT ROUTES
+        Route::post('/appointments/{href}/pay', [PaymentController::class, 'createCheckoutSession'])->name('appointments.pay');
+        Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
+        // Stripe webhook (do NOT protect with CSRF)
+        Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
         // DELETE APPOINTMENT
         Route::delete('/appointments/delete/{href}', [ClientController::class, 'deleteAppointment'])->name('appointments.delete');
 
@@ -120,7 +134,7 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::post('/queries/start', [QueryController::class, 'store'])->name('queries.start');          // start new query
         Route::post('/queries/{id}/message', [QueryController::class, 'sendMessage'])->name('queries.message'); // add message to existing
         // Show thread modal (for salon detail)
-    Route::get('/salon/{id}/thread', [QueryController::class, 'salonThread'])->name('queries.salonThread');
+        Route::get('/salon/{id}/thread', [QueryController::class, 'salonThread'])->name('queries.salonThread');
 
 
 
@@ -134,9 +148,14 @@ Route::middleware([CheckAuthentication::class])->group(function () {
         Route::get('/salon-dashboard', [SalonController::class, 'index'])->name('salonDashboard');
         Route::get('/profile', [SalonController::class, 'profile']);
 
-        Route::get('/salon-profile', [SalonController::class, 'salon_profile']);
+        Route::get('/salon-profile', [SalonController::class, 'salon_profile'])->name('salon.profile');
         Route::post('/salon/add', [SalonController::class, 'addSalon'])->name('add.salon'); // Add new salon
         Route::put('/salon/update', [SalonController::class, 'updateSalon'])->name('update.salon'); // Update existing salon
+
+        Route::get('/salon/stripe/onboard', [SalonController::class, 'createStripeAccount'])->name('stripe.onboard');
+        Route::get('/salon/stripe/onboard/success', [SalonController::class, 'onboardSuccess'])->name('stripe.onboard.success');
+        Route::get('/salon/stripe/onboard/refresh', [SalonController::class, 'onboardRefresh'])->name('stripe.onboard.refresh');
+
 
         Route::get('/services/{action?}/{href?}', [SalonController::class, 'services'])->name('salon.services');
         Route::post('/services/add-service', [SalonController::class, 'addService'])->name('salon.services.add');

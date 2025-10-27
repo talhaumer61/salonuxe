@@ -30,6 +30,7 @@
                                 <th>Sr. </th>
                                 <th>Service</th>
                                 <th>Price</th>
+                                <th>Advance</th>
                                 <th>Salon Name</th>
                                 <th>Salon Phone</th>
                                 <th>Appointment Date</th>
@@ -44,22 +45,44 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="fw-bold">{{ $appointment->service_name }}</td>
                                     <td class="fw-bold">Rs. {{ $appointment->service_price }}</td>
+                                    <td class="fw-bold">
+                                        @if($appointment->status === 1 && empty($appointment->advance_paid) )
+                                        Rs. {{ $appointment->advance_amount }}
+                                        @elseif(!empty($appointment->advance_paid))
+                                        Rs. {{ $appointment->advance_paid }}
+                                        @else
+                                        "N/A"
+                                        @endif
+                                    </td>
                                     <td>{{ $appointment->salon_name }}</td>
                                     <td>{{ $appointment->salon_phone }}</td>
                                     <td class="fw-bold">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}</td>
                                     <td class="fw-bold">{{ \Carbon\Carbon::createFromFormat('H:i', $appointment->appointment_time)->format('h:i A') }}</td>
                                     <td>{!! get_booking_status($appointment->status) !!}</td>
                                     <td>
-                                        @if(in_array($appointment->status, [2, 3]))
-                                            <form action="{{ route('appointments.delete', $appointment->href) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+
+                                        @if($appointment->status === 1 && empty($appointment->advance_paid) )
+                                            <form method="POST" action="{{ route('appointments.pay', $appointment->href) }}">
                                                 @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fa-solid fa-trash text-light"></i> Delete</button>
+                                                <button type="submit" class="btn btn-sm  btn-success">
+                                                    Pay Advance  <i class="fa-solid fa-money-bill-wave text-light"></i>
+                                                </button>
                                             </form>
-                                        @else
-                                            <span class="text-muted">N/A</span>
                                         @endif
+
+                                        @if(!$appointment->client_completed && session('user')->login_type == 2)
+                                        <form action="{{ route('appointments.markCompleted', $appointment->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary">Mark as Completed</button>
+                                        </form>
+                                        @endif
+
+                                        <form action="{{ route('appointments.delete', $appointment->href) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-trash text-light"></i> Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

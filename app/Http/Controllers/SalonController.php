@@ -12,6 +12,9 @@ use App\Models\Service;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AppointmentStatusUpdated;
 use Illuminate\Support\Facades\Log;
+use Stripe\Stripe;
+use Stripe\Account;
+use Stripe\AccountLink;
 
 
 class SalonController extends Controller
@@ -532,59 +535,191 @@ class SalonController extends Controller
 
         return view('salon.bookings', compact('appointments'));
     }
+
     // public function updateStatus(Request $request, $href)
     // {
-    //     $appointment = Appointment::where('href', $href)->firstOrFail();
+    //     Log::info('updateStatus called', ['href' => $href, 'status' => $request->status]);
+
+    //     $appointment = Appointment::where('href', $href)->first();
+
+    //     if (!$appointment) {
+    //         Log::error('Appointment not found', ['href' => $href]);
+    //         return response()->json(['success' => false, 'message' => 'Appointment not found']);
+    //     }
+
     //     $appointment->status = $request->status;
     //     $appointment->save();
 
     //     try {
     //         if (!empty($appointment->client_email)) {
     //             Mail::to($appointment->client_email)->send(new AppointmentStatusUpdated($appointment));
+    //             Log::info('Email sent', ['to' => $appointment->client_email]);
     //         }
-    //     } catch (\Exception $e) {
-    //         Log::error('Mail Error: ' . $e->getMessage());
-    //         return response()->json(['success' => false, 'message' => 'Email sending failed.']);
+    //     } catch (\Throwable $e) {
+    //         Log::error('Email failed', ['error' => $e->getMessage()]);
+    //         // Still return success because status was updated
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Status updated, but email failed: ' . $e->getMessage(),
+    //         ]);
     //     }
+
     //     return response()->json([
     //         'success' => true,
+    //         'message' => 'Status and email sent successfully.'
     //     ]);
     // }
 
     public function updateStatus(Request $request, $href)
-{
-    Log::info('updateStatus called', ['href' => $href, 'status' => $request->status]);
+    {
+        Log::info('updateStatus called', ['href' => $href, 'status' => $request->status]);
 
-    $appointment = Appointment::where('href', $href)->first();
+        $appointment = Appointment::where('href', $href)->first();
 
-    if (!$appointment) {
-        Log::error('Appointment not found', ['href' => $href]);
-        return response()->json(['success' => false, 'message' => 'Appointment not found']);
-    }
-
-    $appointment->status = $request->status;
-    $appointment->save();
-
-    try {
-        if (!empty($appointment->client_email)) {
-            Mail::to($appointment->client_email)->send(new AppointmentStatusUpdated($appointment));
-            Log::info('Email sent', ['to' => $appointment->client_email]);
+        if (!$appointment) {
+            Log::error('Appointment not found', ['href' => $href]);
+            return response()->json(['success' => false, 'message' => 'Appointment not found']);
         }
-    } catch (\Throwable $e) {
-        Log::error('Email failed', ['error' => $e->getMessage()]);
-        // Still return success because status was updated
+
+        // 1️⃣ If salon accepts (status = 1), calculate advance and update amounts
+        if ((int) $request->status === 1) {
+            // Fetch related service to get price
+            $service = Service::where('service_id', $appointment->id_service)->first();
+
+            if ($service && $service->service_price) {
+                $totalAmount = (float) $service->service_price;
+                $advancePercent = 20; // You can adjust this percentage if needed
+                $advanceAmount = round(($totalAmount * $advancePercent) / 100, 2);
+
+                $appointment->total_amount = $totalAmount;
+                $appointment->advance_amount = $advanceAmount;
+                // $appointment->advance_paid = 0;
+                $appointment->status = 1; // switch to your new ENUM statuses
+
+                Log::info('Advance calculated', [
+                    'service_price' => $totalAmount,
+                    'advance_amount' => $advanceAmount
+                ]);
+            } else {
+                Log::warning('Service price not found', ['service_id' => $appointment->id_service]);
+            }
+        }
+        // 2️⃣ If salon rejects (status = 3)
+        elseif ((int) $request->status === 3) {
+            $appointment->status = 3; // rejected
+        }
+        // 3️⃣ Otherwise pending
+        else {
+            $appointment->status = 2; // pending
+        }
+
+        // Save updates
+        $appointment->save();
+
+        // 4️⃣ Send email (optional)
+        try {
+            if (!empty($appointment->client_email)) {
+                Mail::to($appointment->client_email)->send(new AppointmentStatusUpdated($appointment));
+                Log::info('Email sent', ['to' => $appointment->client_email]);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Email failed', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated, but email failed: ' . $e->getMessage(),
+            ]);
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Status updated, but email failed: ' . $e->getMessage(),
+            'message' => 'Status updated successfully.',
         ]);
     }
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Status and email sent successfully.'
-    ]);
-}
+    public function createStripeAccount()
+    {
+        Stripe::setApiKey(config('stripe.secret'));
 
+        // Fetch salon from logged-in user
+        // $salon = Auth::user()->salon ?? null; 
+        // Get the logged-in user's salon_id from session (or Auth)
+        $salonId = session('user')->salon_id;
+
+        // Query the salon from the salons table
+        $salon = DB::table('salons')
+            ->where('salon_id', $salonId)
+            ->first();
+
+        if (!$salon) {
+            return back()->with('error', 'Salon not found.');
+        }
+
+        // If salon already has account, skip creation
+        if ($salon->stripe_account_id) {
+            return $this->generateOnboardingLink($salon);
+        }
+
+        // Create a new connected account
+$account = Account::create([
+    'type' => 'express',
+    'country' => 'US',
+    'email' => $salon->salon_email,
+    'capabilities' => [
+        'transfers' => ['requested' => true],
+    ],
+]);
+
+
+        DB::table('salons')->where('salon_id', $salonId)->update(['stripe_account_id' => $account->id]);
+        $salon = DB::table('salons')->where('salon_id', $salonId)->first();
+
+        // Redirect to onboarding link
+        return $this->generateOnboardingLink($salon);
+    }
+
+    public function generateOnboardingLink($salon)
+    {
+        Stripe::setApiKey(config('stripe.secret'));
+
+        $accountLink = AccountLink::create([
+            'account' => $salon->stripe_account_id,
+            'refresh_url' => route('stripe.onboard.refresh'),
+            'return_url' => route('stripe.onboard.success'),
+            'type' => 'account_onboarding',
+        ]);
+
+        return redirect($accountLink->url);
+    }
+
+    public function onboardSuccess()
+    {
+        $salonId = session('user')->salon_id;
+
+        $salon = DB::table('salons')->where('salon_id', $salonId)->first();
+
+        if ($salon) {
+            DB::table('salons')
+                ->where('salon_id', $salonId)
+                ->update(['stripe_onboarded' => true]);
+        }
+
+        sessionMsg('success', 'Stripe Onboarding Completed', 'success');
+        return redirect()->route('salon.profile')
+            ->with('success', 'Stripe onboarding completed successfully!');
+    }
+
+    public function onboardRefresh()
+    {
+        $salonId = session('user')->salon_id;
+
+        $salon = DB::table('salons')->where('salon_id', $salonId)->first();
+
+        if (!$salon) {
+            return redirect()->back()->with('error', 'Salon not found.');
+        }
+
+        return $this->generateOnboardingLink($salon);
+    }
 
     // Salon Signup
     public function signup(Request $request)

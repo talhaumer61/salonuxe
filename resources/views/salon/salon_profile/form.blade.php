@@ -87,6 +87,12 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div class="form-group row align-items-center">
+                                        <label class="col-lg-4 col-xl-2 control-label text-lg-end pt-2 mt-1 mb-0">Payment Account</label>
+                                        <div class="col-lg-8 col-xl-10">
+                                            <a href="{{ route('stripe.onboard') }}" class="btn btn-primary">Connect with Stripe</a>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Timings Tab -->
